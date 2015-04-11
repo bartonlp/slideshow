@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title>Photo Slide Show Demo</title>
+
+  <!--
+  This is an example file that demonstrates the use of the
+  SlideShow javascript class and PHP class.
+  The files included in the demonstration are:
+  photos.html (this file),
+  SlideShow.js (SlideShow javascript class),
+  SlideShow.php (SlideShow PHP class),
+  prototype.js (the prototype framework. see http://www.prototype.org),
+  several images for testing:
+  back.gif, bestviewedwithmozillabig.gif, msfree.png,
+  pissonwindows.gif, and smallmug.jpg.
+  If you download this demo and put the photos.html, SlideShow.js and
+  SlideShow.php  in the 'Document Root' path of
+  your web server and then put the images in a directory under this
+  named 'images' and run this demo html it should all work.
+  Note that the images need to be in a directory that the web server
+  can get images from and that does NOT have an index.html or some
+  other file that the web server will server as the default for that
+  directory. For example if you site it www.example.com and the
+  'Document Root' is /var/www/htdocs and you make a test directory
+  under the 'Docuement Root' called photosTest and put the three
+  SlideShow.* files in that directory and create a sub-directory called
+  images and put the five image files there; then you should be able
+  to run the demo and click start and see the images. After that you
+  can click stop and change the path to
+  'www.example.com/photosTest/images' with type 'Remote File System
+  (URL)' and click 'Submit Path' and then start.
+
+  If you use the tar file it should create the directories for you.
+  As I don't use Windows (note the msfree.png).
+  I have not tested this on Windows, sorry (not really).
+  -->
+  
+  <!-- Load the prototype.js first. For details see:
+  http://www.prototypejs.org/ for documentation on this framework. -->
+  
+  <script type="text/javascript" src="prototype.js"></script>
+
+  <!-- Load the SlideShow object from SlideShow.js -->
+  
+  <script type="text/javascript" src="SlideShow.js"></script>
+
+  <!-- Initialize the SlideShow object.
+       Also a function to show how to use the set/get functions after
+       initialization.
+  -->
+
+  <script type="text/javascript">
+      // Initialize the SlideShow object. See SlideShow.js for
+      // information on initialization process.
+
+      var ss = new SlideShow({disp: 'slideshow',
+                            errDisp: 'errors',
+                            width: '400',
+                            mode: 'loc',
+                            enlarge: '1000',
+                            path: './images',
+                            control: {start: 'startit',
+                                      stop: 'stopit',
+                                      reset: 'resetit',
+                                      backward: 'back',
+                                      forward: 'next'}});
+
+      // This is an example of the SlideShow:index event.
+      // Every time the index changes the event is fired on the
+      // slidesshow display div. This can be used to display the
+      // index or anything else that is interesting each time the
+      // image changes.
+      
+      function setObserveIndex() {
+        document.observe("SlideShow:index", newImage);
+      }
+
+      // Callback from event above.
+      
+      function newImage(event) {
+        var index =event.memo.index;
+        var indexP = $('index');
+        indexP.update("index: " +index + " filename: " + ss.getImageName());
+        return false;
+      }
+
+      // This is called via onclick of the input id='int_button'
+      // The interval is set in the input id='interval' text box.
+      
+      function setInterval() {
+        var i = $('interval');
+        ss.setInterval(i.value);
+        return false;
+      }
+
+      // Set a new path
+
+      function setNewPath() {
+        var path = $('path');
+        var mode = $('mode');
+
+        // If there was an error clear it out
+
+        $('errors').style.display = 'none';
+        
+        //alert('path=' + path.value + ' mode=' + mode.value);
+
+        ss.setPath(path.value, mode.value);
+        path.value = ss.getPath()['path'];
+        ss.setIndex(0); // set the index incase we have been running and index is not zero
+      }
+  </script>
+
+  <style type='text/css'>
+#footer {
+        border: 1px solid back;
+        background-color: green;
+        color: white;
+        margin: 10px;
+        width: auto;
+}
+#errors {
+        border: 1px solid red;
+        margin-left: 0;
+        width: 500px;
+        margin-right: auto;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        height: auto;
+        text-aligh: center;
+        display: none;
+        overflow: auto;
+}
+  </style> 
+</head>
+
+<!-- The on load here activates the setObserverIndex() in the head.
+The SlideShow.php script sets another load for the init() method via the
+DOM event module. Both events are fired on load. -->
+
+<body onload="setObserveIndex();">
+
+<!-- Place holder for a header -->
+
+<div id="header">
+
+</div>
+
+<!-- Place holder for the title etc -->
+
+<div id="top">
+<h1 id="title">Photo Slideshow Demo</h1>
+<p id="info"></p>
+</div>
+
+<!-- This is for the index and file name. See setObserverIndex() and
+newImage() -->
+
+<div><p id='index' style='border: 1px solid red; width: auto;'></p></div>
+
+<!-- This is for the slide show. The img tag is placed inside of this
+div -->
+
+<div id="slideshow" style="border: 4px solid black"></div>
+
+<!-- This is for the controls. They don't need to go into a div but it
+keeps things contained. -->
+
+<div id="controls">
+   <!-- I have made the control elements buttons. The id of each
+   control is in the controls array for initialization -->
+   
+   <br><input id='startit' type='button' value='Start'>&nbsp;
+   <input id='stopit' type='button' value='Stop'>&nbsp;<input
+   id='resetit' type='button' value='Reset'>&nbsp;
+   <input id='next' type='button' value='Forward'>&nbsp;
+   <input id='back' type='button' value='Backward'><br><br>
+   Enter interval value in ms: <input id='interval' type='text'
+   value='5000'>&nbsp;
+
+   <!-- This is not part of 'control' it is just an example that shows
+   how to change the interval. The function setInterval() is in the
+   'head' -->
+   
+   <input id='int_button' type='button' value='Submit interval'
+    onclick='return setInterval();'>
+   <br><br>
+
+   <!-- Let the user select another path and mode -->
+   Select a path: <input id='path' type='text'>&nbsp;Select the mode:
+   <select id='mode'>
+      <option name='Local' value='loc'>Local File System</option>
+      <option name='URL' value='url'>Remote File System (url)</option>
+   </select>&nbsp;<input id='path_submit' type='button'
+   value='Submit Path' onclick='return setNewPath()'><br>
+   <br>
+
+   <!-- Example of returning the path which is an array of 'path' and
+   'mode' -->
+   
+   <input id='getpath' type='button' value='getpath'
+     onclick='var ar = ss.getPath(); alert("path="+ar["path"]+
+          " mode="+ ar["mode"]); return false;'>
+         
+</div>
+
+<!-- Put this id in the initialization 'errDisp' and errors will
+happend here -->
+
+<div id='errors'></div>
+
+<!-- just a place holder for a footer if one were needed -->
+
+<div id="footer">That's All Folks</div>
+
+</body>
+</html>

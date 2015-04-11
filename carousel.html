@@ -6,7 +6,7 @@
   The original code can be found at Dynamic Drive at
   http://www.dynamicdrive.com/dynamicindex14/carousel2.htm
   
-  This is modified to use SlideShow.php instead of hard coding the
+  This is modified to use SlideShow.class.php instead of hard coding the
   names into the html. You need prototype.js for this example so load
   it in the 'head'.
   -->
@@ -15,31 +15,38 @@
 
   <script>
 // I, Barton Phillips, made
-// modification to use SlideShow.php.
+// modification to use SlideShow.class.php.
 // Note you can't get the list of images from
 // http://images.amazon.com/images/P/
 // because they have an index.html in that directory with a 1px jpg
-// in it. SlideShow.php can only see directories without a default
-// html in it. I have changed the location to a site that I developed
-// that has a clean 'pictures' directory.
+// in it. SlideShow.class.php can only see directories without a default
+// html in it. I have changed the location to sites that I developed
+// that have a clean 'pictures' directory.
 // You can also use the images downloaded with the class by using
 // 'url' and a full http://path or use 'loc' with a path relative to
-// the SlideShow.php file.
+// the SlideShow.class.php file.
 
 var imageNames = new Array();
 
 // Uncomment this to try a remote site.
 
 //var request =
-//'SlideShow.php?mode=url&path=http://www.swam.us/pictures';
+//  'SlideShow.class.php?mode=url&path=http://www.bartonphillips.com/weewx-images';
+
+//var request =
+//  'SlideShow.class.php?mode=url&path=http://www.granbyrotary.org/SilverCreet-Oct-1-2013';
+
+var request =
+  'SlideShow.class.php?mode=url&path=http://www.granbyrotary.org/images';
+
 
 // NOTE: you can also use the images that were downloaded with the
 // class by using 'loc' with the path to 'images'. This can then be a
-// relative path under SlideShow.php. This works because the
+// relative path under SlideShow.class.php. This works because the
 // 'images' directory can be seen by the server under 'Document
 // Root'.
 
-var request = 'SlideShow.php?mode=loc&path=images';
+//var request = 'SlideShow.class.php?mode=loc&path=images';
 
 // Make an Ajax request.
 // set asynchronous to false to do synchronous so we get the pictures
@@ -64,11 +71,10 @@ function fail(trans) {
   alert(trans.responseText);
 }
 
-</script>
+  </script>
+  <!-- end of head modification -->
 
-   <!-- end of head modification -->
-
-<script type='text/javascript'>
+  <script>
 /***********************************************
 * Carousel Slideshow II- By Harry Armadillo (http://www.codingforums.com/showthread.php?t=58814)
 * Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
@@ -125,9 +131,9 @@ function carousel(params){
       images[i]=img.cloneNode(true);
 
       /** Barton Phillips **/  
-      /* Note here about SlideShow.php if you were using proxy or get. */
+      /* Note here about SlideShow.class.php if you were using proxy or get. */
       /* To use 'proxy' this would have to change to: */
-      /* images[i].src = 'SlideShow.php?mode=proxy&path='+params.images[i]; */
+      /* images[i].src = 'SlideShow.class.php?mode=proxy&path='+params.images[i]; */
       /* The 'get' version is a little trickier. */
       
       images[i].src=params.images[i];
@@ -196,47 +202,85 @@ function carousel(params){
 </head>
 
 <body>
-
 See this thread for detailed info and docs on script:
-<a href="http://www.codingforums.com/showthread.php?t=58814">http://www.codingforums.com/showthread.php?t=58814</a>
+<a href="http://www.codingforums.com/showthread.php?t=58814">
+  http://www.codingforums.com/showthread.php?t=58814
+</a>
 
-<div style="margin-top: 1em; font-weight: bold;">1) Horizontal Slideshow:</div>
-<script type='text/javascript'>
+<div style="margin-top: 1em; font-weight: bold;">Horizontal Slideshow:</div>
 
-// Details about this call can be found at Dynamic Drive at
+<div style="float: left">
+<script>
+
+// Details about this call can be found at Dynamic Drive
 // http://www.dynamicdrive.com/dynamicindex14/carousel2.htm 
 
-carousel({id:'Amazon Books', //Enter arbitrary but unique ID of this slideshow instance
-          border:'',
-          size_mode:'image', //Enter "carousel" or "image". Affects the width and height parameters below.
-          /* Barton Phillips. I made the images a little bigger */
-          width:207, //Enter width of image or entire carousel, depending on above value
-          height:340, //Enter height of image or entire carousel, depending on above value
-          sides:6, //# of sides of the carousel. What's shown = sides/2. Even integer with sides/2< total images is best
-          steps:23, //# of animation steps. More = smoother, but more CPU intensive
-          speed:5, //Speed of slideshow. Larger = faster.
-          direction:'left', //Direction of slideshow. Enter "top", "bottom", "left", or "right"
-// Barton Phillips: NEW CODE. imageNames is an array filled by the
-// AJAX call at the top of the 'head' section.
-          images: imageNames,
-// ORIGINAL CODE
-//           images:['http://images.amazon.com/images/P/0596004672.01.MZZZZZZZ.jpg',
-//                   'http://images.amazon.com/images/P/0201730847.01.MZZZZZZZ.jpg',
-//                   'http://images.amazon.com/images/P/0201735687.01.MZZZZZZZ.jpg',
-// 									'http://images.amazon.com/images/P/0596005768.01._SCMZZZZZZZ_.jpg'],
-//           links: ['http://www.dynamicdrive.com', //enter link URLs, or for no links, empty array instead (links :[])
-// 									'http://www.javascriptkit.com',
-// 									'http://www.codingforums.com',
-// 									'http://www.cssdrive.com'],
-//           titles:['Book #1',
-// 									'Book #2',
-// 									'Book #3',
-// 									'Book #4'],
-          image_border_width:1,
-          image_border_color:'blue'
-          });
+carousel({
+  id:'Slide Show1', //Enter arbitrary but unique ID of this slideshow instance
+  border:'',
+  size_mode:'image', //Enter "carousel" or "image". Affects the width and height parameters below.
+  /* Barton Phillips. I made the images a little bigger */
+  width:210, //Enter width of image or entire carousel, depending on above value
+  height:340, //Enter height of image or entire carousel, depending on above value
+  sides:6, //# of sides of the carousel. What's shown = sides/2. Even integer with sides/2< total images is best
+  steps:50, //# of animation steps. More = smoother, but more CPU intensive
+  speed:2, //Speed of slideshow. Larger = faster.
+  direction:'right', //Direction of slideshow. Enter "top", "bottom", "left", or "right"
+  // Barton Phillips: NEW CODE. imageNames is an array filled by the
+  // AJAX call at the top of the 'head' section.
+  images: imageNames,
+  // ORIGINAL CODE
+  //           images:['http://images.amazon.com/images/P/0596004672.01.MZZZZZZZ.jpg',
+  //                   'http://images.amazon.com/images/P/0201730847.01.MZZZZZZZ.jpg',
+  //                   'http://images.amazon.com/images/P/0201735687.01.MZZZZZZZ.jpg',
+  // 									'http://images.amazon.com/images/P/0596005768.01._SCMZZZZZZZ_.jpg'],
+  //           links: ['http://www.dynamicdrive.com', //enter link URLs, or for no links, empty array instead (links :[])
+  // 									'http://www.javascriptkit.com',
+  // 									'http://www.codingforums.com',
+  // 									'http://www.cssdrive.com'],
+  //           titles:['Book #1',
+  // 									'Book #2',
+  // 									'Book #3',
+  // 									'Book #4'],
+  image_border_width:1,
+  image_border_color:'blue'
+});
+</script>
+</div>
+<div style="float: right">
+<script>
+carousel({
+  id:'Slide Show2', //Enter arbitrary but unique ID of this slideshow instance
+  border:'',
+  size_mode:'carousel', //Enter "carousel" or "image". Affects the width and height parameters below.
+  /* Barton Phillips. I made the images a little bigger */
+  width:210, //Enter width of image or entire carousel, depending on above value
+  height:340, //Enter height of image or entire carousel, depending on above value
+  sides:6, //# of sides of the carousel. What's shown = sides/2. Even integer with sides/2< total images is best
+  steps:50, //# of animation steps. More = smoother, but more CPU intensive
+  speed:2, //Speed of slideshow. Larger = faster.
+  direction:'top', //Direction of slideshow. Enter "top", "bottom", "left", or "right"
+  // Barton Phillips: NEW CODE. imageNames is an array filled by the
+  // AJAX call at the top of the 'head' section.
+  images: imageNames,
+  // ORIGINAL CODE
+  //           images:['http://images.amazon.com/images/P/0596004672.01.MZZZZZZZ.jpg',
+  //                   'http://images.amazon.com/images/P/0201730847.01.MZZZZZZZ.jpg',
+  //                   'http://images.amazon.com/images/P/0201735687.01.MZZZZZZZ.jpg',
+  // 									'http://images.amazon.com/images/P/0596005768.01._SCMZZZZZZZ_.jpg'],
+  //           links: ['http://www.dynamicdrive.com', //enter link URLs, or for no links, empty array instead (links :[])
+  // 									'http://www.javascriptkit.com',
+  // 									'http://www.codingforums.com',
+  // 									'http://www.cssdrive.com'],
+  //           titles:['Book #1',
+  // 									'Book #2',
+  // 									'Book #3',
+  // 									'Book #4'],
+  image_border_width:1,
+  image_border_color:'blue'
+});
 
 </script>  
-
+</div>
 </body>
 </html>

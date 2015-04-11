@@ -1,29 +1,22 @@
 // Javascript file
 /*
-Copyright (c) 2015 Barton Phillips All rights reserved.
-Original copyright (c) 2008 Barton Phillips
+COPYRIGHT:
 
-The MIT License (MIT)
+Copyright Barton Phillips 2008. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+   SlideShow.js (the SlideShow class) is free software. 
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+   This library is free software; you can redistribute it and/or modify it
+   under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation; either version 2.1 of the License, or (at
+   your option) any later version.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   This library is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+   General Public License for more details.
+   http://www.gnu.org/copyleft/lesser.txt
 */
-
 // The SlideShow Class.
 // The constructor takes an array with the following items possible:
 // path: the path to the pictures
@@ -94,29 +87,28 @@ SOFTWARE.
 // works.
 //
 // This code was created by:
-// Barton Phillips.
-// Home Page: www.bartonphillips.com,
-// Home:      www.bartonphillips.dyndns.org,
-// Email:     bartonphillips@gmail.com
+// Barton Phillips. www.bartonphillips.org,
+// www.bartonphillips.dyndns.org,
+// bartonphillips@gmail.com
 // ---------------------------------------------------------------------
 
 var SlideShow;
 if(!SlideShow)
-  SlideShow = {};
+	SlideShow = {};
 
 SlideShow = function(ctrl) {
   this.ajaxRequest = 0;
-  this.mode = 'loc';
+	this.mode = 'loc';
   this.interval = 5000; // 5 seconds per picture
-  this.index = null; // picture index.
+	this.index = null; // picture index.
   this.width = '200';
   this.height = '';
   this.enlargeWidth = window.innerWidth - 100;
   this.enlargeWSet = window.innerWidth - 100;
-  this.enlarged = false;
+	this.enlarged = false;
   this.stopped = true;  // initally stopped
-  this.imageNames = new Array;
-  this.image = new Image;
+	this.imageNames = new Array;
+	this.image = new Image;
 
   // Check for ssdebug in the url' search property.
   // To turn on debugging the url should be "photos.html?ssdebug"
@@ -127,46 +119,46 @@ SlideShow = function(ctrl) {
     this.DEBUG = true;
   }
 
-  // ctrl is an array or null
-  // see above for array elements.
+	// ctrl is an array or null
+	// see above for array elements.
 
   var me = this;  // the 'this' value for the closure in the event observers.
 
   // set event observers for 'load' and 'resize'  
 
-//  Event.observe(window, 'load', function() { me.init(); });
-  $(window).bind('load', function() {me.init();});
-//  Event.observe(window, 'resize', function() { me.resize(); });
-  $(window).bind('resize', function() {me.resize();});
+  Event.observe(window, 'load', function() { me.init(); });
+  
+	Event.observe(window, 'resize', function() { me.resize(); });
+
   // If called with NO arguments just return. Not much will work until
   // individual properties are initialized via the setters.
   
   if(!arguments.length)
-    { return; }
+		{ return; }
 
-  // pick up the values from the array and set the class
-  // variables
+	// pick up the values from the array and set the class
+	// variables
 
-  this.disp = ctrl['disp'];
-  this.errDisp = ctrl['errDisp'];
+	this.disp = ctrl['disp'];
+	this.errDisp = ctrl['errDisp'];
          
-  if(ctrl['width']) this.width = ctrl['width'];
+	if(ctrl['width']) this.width = ctrl['width'];
 
-  if(ctrl['height']) this.height = ctrl['height'];
+	if(ctrl['height']) this.height = ctrl['height'];
 
-  if(ctrl['enlarge']) {
-    this.enlargeWidth = this.enlargeWSet = ctrl['enlarge'];
-  }
+	if(ctrl['enlarge']) {
+		this.enlargeWidth = this.enlargeWSet = ctrl['enlarge'];
+	}
          
-  if(ctrl['control']) {
-    this.backward = ctrl['control']['backward'];
-    this.forward = ctrl['control']['forward'];
-    this.stop = ctrl['control']['stop'];
-    this.start = ctrl['control']['start'];
-    this.reset = ctrl['control']['reset'];
-  }
-  
-  this.setPath(ctrl['path'], (ctrl['mode'] || 'loc'));
+	if(ctrl['control']) {
+		this.backward = ctrl['control']['backward'];
+		this.forward = ctrl['control']['forward'];
+		this.stop = ctrl['control']['stop'];
+		this.start = ctrl['control']['start'];
+		this.reset = ctrl['control']['reset'];
+	}
+	
+	this.setPath(ctrl['path'], (ctrl['mode'] || 'loc'));
 }
 
 // Getter/Setter functions.
@@ -176,11 +168,11 @@ SlideShow = function(ctrl) {
 // Set the setTimeout() delay interval in milliseconds
 
 SlideShow.prototype.setInterval = function(interval) {
-  this.interval = interval;
+	this.interval = interval;
 }
 
 SlideShow.prototype.getInterval = function() {
-  return this.interval;
+	return this.interval;
 }
 
 // Get the max index which is imageNames.length -1
@@ -197,53 +189,52 @@ SlideShow.prototype.getMaxIndex = function() {
 // things when the image is changed.
 
 SlideShow.prototype.setIndex = function(index) {
-  // set the index value and fire an index event on disp
-  this.index = index;
-//  this.disp.fire("SlideShow:index", { index: index });
-  this.disp.trigger("SlideShow:index", [ index ]);
+	// set the index value and fire an index event on disp
+	this.index = index;
+	this.disp.fire("SlideShow:index", { index: index });
 }
 
 SlideShow.prototype.getIndex = function() {
-  return this.index;
+	return this.index;
 }
 
 // Set the width of the 'disp' box
 
 SlideShow.prototype.setWidth = function(width) {
-  this.width = width;
+	this.width = width;
 }
 
 SlideShow.prototype.getWidth =  function() {
-  return this.width;
+	return this.width;
 }
 
 // Set the height of the 'disp' box
 
 SlideShow.prototype.setHeight =  function(height) {
-  this.height = height;
+	this.height = height;
 }
 
 SlideShow.prototype.getHeight =  function() {
-  return this.height;
+	return this.height;
 }
 
 // Set the width that is the Max width that the image will expand to.
 
 SlideShow.prototype.setEnlargeWidth =  function(width) {
-  this.enlargeWidth = this.enlargeWSet = width;
+	this.enlargeWidth = this.enlargeWSet = width;
 }
 
 // Get the enlargeWSet which is the max value not the current value of
 // enlargeWidth which is controlled by the size of the window box.
 
 SlideShow.prototype.getMaxEnlargeWidth =  function() {
-  return this.enlargeWSet;
+	return this.enlargeWSet;
 }
 
 // Get the current image name
 
 SlideShow.prototype.getImageName =  function() {
-  return this.imageNames[this.index];
+	return this.imageNames[this.index];
 }
 
 // Set the path and mode. The path is a path not a filename!
@@ -253,54 +244,48 @@ SlideShow.prototype.getImageName =  function() {
 // reset. Check the imageMaxIndex() and then setIndex if necessary
 
 SlideShow.prototype.setPath =  function(path, mode) {
-  this.mode = mode;
-  this.path = path;
+	this.mode = mode;
+	this.path = path;
                  
-  if(path) {
+	if(path) {
                                                
-    var request;
+		var request;
 
-    if(mode == 'loc') {
-      // local file system
-      // use the proxy to do the file system stuff
+		if(mode == 'loc') {
+			// local file system
+			// use the proxy to do the file system stuff
 
-      request = "SlideShow.class.php?mode=loc&path="+path;
-    } else {
-      // remote file system
+			request = "SlideShow.class.php?mode=loc&path="+path;
 
-      var m = /^http:\/\//;
+		} else {
+			// remote file system
 
-      if(!path.match(m)) {
-        path = 'http://' + path;
-      }
-      this.path = path;
+			var m = /^http:\/\//;
 
-      request = "SlideShow.class.php?mode=url&path="+path;
-    }
+			if(!path.match(m)) {
+				path = 'http://' + path;
+			}
+			this.path = path;
+
+			request = "SlideShow.class.php?mode=url&path="+path;
+		}
 
     var me = this;
-
-    $.ajax({
-      url: request,
-      success: function(trans) { me.succInit(trans); },
-      error:  function(trans) { me.fail(trans); }
-    });
-/*    
+    
     this.ajaxRequest = new Ajax.Request(request, {
         method: 'get',
         onSuccess: function(trans) { me.succInit(trans); },
         onFailure: function(trans) { me.fail(trans); }
-    });
-*/    
-  }
+    }); 
+	}
 }
 
 // Get the path and mode. This returns an hash array.
 
 SlideShow.prototype.getPath =  function() {
-  // Return an array with the path and mode
-  
-  return {path: this.path, mode: this.mode};
+	// Return an array with the path and mode
+	
+	return {path: this.path, mode: this.mode};
 }
 
 // After the page is loaded init() is called via the 'onload' event.
@@ -315,141 +300,131 @@ SlideShow.prototype.init = function() {
 
   if(this.disp) {
     this.disp = $(this.disp);
-//    this.disp.observe('click', function(ev) { me.enlarge() });
-//    this.disp.update("<img id='ssimage' />");
-    this.disp.click(function(ev) { me.enlarge() });
-    this.disp.html("<img id='ssimage' />");
-    this.ssimage = $('#ssimage');
+    this.disp.observe('click', function(ev) { me.enlarge() });
+    this.disp.update("<img id='ssimage' />");
+    this.ssimage = $('ssimage');
   }
 
   if(this.errDisp) {
     this.errDisp = $(this.errDisp);
   }
 
-  if(this.width) {
-    this.disp.width(this.width + 'px');
-  }
-  if(this.height) {
-    this.disp.height(this.height + 'px');
-  }
+	if(this.width) {
+		this.disp.style.width = this.width + 'px';
+	}
+	if(this.height) {
+		this.disp.style.height = this.height + 'px';
+	}
 
-  if(this.start) {
+	if(this.start) {
     this.start = $(this.start);
-//    this.start.observe('click', function() { me.startSlideshow(); });
-    this.start.click(function() { me.startSlideshow(); });
-  }
+		this.start.observe('click', function() { me.startSlideshow(); });
+	}
 
-  if(this.stop) {
-    this.stop = $(this.stop);
-//    this.stop.observe('click', function() { me.stopSlideshow(); });
-    this.stop.click(function() { me.stopSlideshow(); });
-  }
+	if(this.stop) {
+		this.stop = $(this.stop);
+		this.stop.observe('click', function() { me.stopSlideshow(); });
+	}
 
-  if(this.reset) {
-    this.reset = $(this.reset);
-//    this.reset.observe('click', function() { me.resetSlideshow(); });
-    this.reset.click(function() { me.resetSlideshow(); });
-  }
+	if(this.reset) {
+		this.reset = $(this.reset);
+		this.reset.observe('click', function() { me.resetSlideshow(); });
+	}
 
-  if(this.forward) {
-    this.forward = $(this.forward);
-//    this.forward.observe('click', function() { me.forwardSlideshow();
-//    });
-    this.forward.click(function() { me.forwardSlideshow(); });
-  }
-
-  if(this.backward) {
-    this.backward = $(this.backward);
-//    this.backward.observe('click', function() {
-//    me.backwardSlideshow(); });
-    this.backward.click(function() { me.backwardSlideshow(); });
-  }
+	if(this.forward) {
+		this.forward = $(this.forward);
+		this.forward.observe('click', function() { me.forwardSlideshow(); });
+	}
+	if(this.backward) {
+		this.backward = $(this.backward);
+		this.backward.observe('click', function() { me.backwardSlideshow(); });
+	}
 }
 
 // When window changes size we change the enlarge value so the enlarged
 // image is always withing the window box.
 
 SlideShow.prototype.resize = function() {
-  var w = window.innerWidth;
+	var w = window.innerWidth;
 
   // I have chosen 100 px as the edge of the enlarge box, feel free to
   // change that.
   
-  if(this.enlargeWSet > (w - 100)) {
-    this.enlargeWidth = w - 100;
-  } else {
-    this.enlargeWidth = this.enlargeWSet;
-  }
+	if(this.enlargeWSet > (w - 100)) {
+		this.enlargeWidth = w - 100;
+	} else {
+		this.enlargeWidth = this.enlargeWSet;
+	}
 
-  if(this.enlarged) {
-    var ss = $('#ssimage');
-    ss.width(this.enlargeWidth + 'px');
-    var h = ss.height();
+	if(this.enlarged) {
+		var ss = $('ssimage');
+		ss.style.width = this.enlargeWidth + 'px';
+		var h = ss.height;
 
-    this.disp.width(this.enlargeWidth + 'px');
-    this.disp.height(h + 'px');
-  }
+		this.disp.style.width = this.enlargeWidth + 'px';
+		this.disp.style.height = h + 'px';
+	}
 }
 
 // Start the Slideshow. This function is linked to the onclick of the
 // 'start' id.  This could be called programmatically if you like.
 
 SlideShow.prototype.startSlideshow = function() {
-  // start the slide show.
-  // set timer
+	// start the slide show.
+	// set timer
 
-  if(this.index === null) {
-    this.setIndex(0); // NOTE: all index manipulation is done via the method!
-  }
+	if(this.index === null) {
+		this.setIndex(0); // NOTE: all index manipulation is done via the method!
+	}
 
-  // Clear errors if we use errDisp
+	// Clear errors if we use errDisp
 
-  if(this.errDisp) {
-    this.errDisp.hide();
-  }
+	if(this.errDisp) {
+		this.errDisp.style.display = 'none';
+	}
 
   // once we start hide the start button.
+  
+	this.start.style.visibility = 'hidden';
 
-  this.start.hide(); //style.visibility = 'hidden';
+	if(this.index > this.imageNames.length -1) {
+		this.setIndex(0);
+	}
 
-  if(this.index > this.imageNames.length -1) {
-    this.setIndex(0);
-  }
+	var img = this.imageNames[this.index];
 
-  var img = this.imageNames[this.index];
+	this.stopped = false; // start slide show
 
-  this.stopped = false; // start slide show
-
-  this._image(img);
+	this._image(img);
 }
 
 // Stop the Slideshow. This is linked to the 'stop' id's onclick.
 // This can be called programmatically (and is).
 
 SlideShow.prototype.stopSlideshow = function() {
-  var msg = 'Continue'; // message of the 'start' button
+	var msg = 'Continue'; // message of the 'start' button
 
   // is the error timeout timer running?
   // if yes then stop it and set start button message to Start.
   
-  if(this.errTimeout) {
-    clearInterval(this.errTimeout);
-    this.errTimeout = 0;
-    msg = 'Start';
-  }
+	if(this.errTimeout) {
+		clearInterval(this.errTimeout);
+		this.errTimeout = 0;
+		msg = 'Start';
+	}
 
   // If running stop the timer
   
-  if(!this.stopped) {
-    clearInterval(this.timer);
-    this.timer = 0;
-    this.stopped = true;
-  }
+	if(!this.stopped) {
+		clearInterval(this.timer);
+		this.timer = 0;
+		this.stopped = true;
+	}
 
   // set the start button message and make it visible
   
   this.start.value = msg;
-  this.start.show(); //style.visibility = 'visible';
+	this.start.style.visibility = 'visible';
 }
 
 // Rest the Slideshow. This function is linked to the 'restart' id's
@@ -459,13 +434,13 @@ SlideShow.prototype.stopSlideshow = function() {
 // the show.
 
 SlideShow.prototype.resetSlideshow = function() {
-  this.stopSlideshow();
-  this.start.show(); //style.visibility = 'visible';
-  this.start.value = 'Start';
+	this.stopSlideshow();
+	this.start.style.visibility = 'visible';
+	this.start.value = 'Start';
   this.setIndex(0);
   // If you want to display the first image uncomment the following
   // line.
-  //this._image(this.imageNames[0]);
+	//this._image(this.imageNames[0]);
 }
 
 // Enlarge the current image. This method is linked to 'enlarge' id's
@@ -476,14 +451,14 @@ SlideShow.prototype.enlarge = function() {
   // If the image is not enlarged then enlarge it. If it is enlarged
   // then make it small again.
   
-  if(!this.enlarged) {
-    this.enlarged = true;
-    this.stopSlideshow();
-    this.resize();
-  } else {
-    this.enlarged = false;
-    this.dispImage();
-  }
+	if(!this.enlarged) {
+		this.enlarged = true;
+		this.stopSlideshow();
+		this.resize();
+	} else {
+		this.enlarged = false;
+		this.dispImage();
+	}
 }
 
 // Move the slideshow backward one image. This method is linked to the
@@ -491,14 +466,14 @@ SlideShow.prototype.enlarge = function() {
 // reachs zero.
 
 SlideShow.prototype.backwardSlideshow = function() {
-  this.stopSlideshow();
+	this.stopSlideshow();
 
-  if(this.index > 0) {
-    this.setIndex(this.index -1);
-  } else {
-    this.setIndex(this.imageNames.length -1);
-  }
-  this._image(this.imageNames[this.index]);
+	if(this.index > 0) {
+		this.setIndex(this.index -1);
+	} else {
+		this.setIndex(this.imageNames.length -1);
+	}
+	this._image(this.imageNames[this.index]);
 }
 
 // Move the slideshow forward one image. This method is linked to the
@@ -506,26 +481,26 @@ SlideShow.prototype.backwardSlideshow = function() {
 // reaches the end of the imageNames.
 
 SlideShow.prototype.forwardSlideshow = function() {
-  this.stopSlideshow();
-  if(this.index < this.imageNames.length -1) {
-    this.setIndex(this.index +1);
-  } else {
-    this.setIndex(0);
-  }
-  this._image(this.imageNames[this.index]);
+	this.stopSlideshow();
+	if(this.index < this.imageNames.length -1) {
+		this.setIndex(this.index +1);
+	} else {
+		this.setIndex(0);
+	}
+	this._image(this.imageNames[this.index]);
 }
 
 // Fetch and display the next image. This is a callback from
 // setTimeout().
 
 SlideShow.prototype.nextImage = function() {
-  this.setIndex(this.index +1);
+	this.setIndex(this.index +1);
 
-  if(this.index > this.imageNames.length -1) {
-    this.setIndex(0);
+	if(this.index > this.imageNames.length -1) {
+		this.setIndex(0);
   }
 
-  this._image(this.imageNames[this.index]);
+	this._image(this.imageNames[this.index]);
 }
 
 // _image is a helper functions. It is called from several places. It
@@ -535,56 +510,49 @@ SlideShow.prototype.nextImage = function() {
 SlideShow.prototype._image = function(img) {
   var me = this;
 
-  if(this.mode == 'url') {
-    // cache the image and set the onload event. 
+	if(this.mode == 'url') {
+		// cache the image and set the onload event. 
 
     this.src = img;
     var me = this;
-    this.errTimeout = setTimeout(function() { me.errImage(); }, 10000);
-    this.image.onload = function() { me.dispImage(); };
-    this.image.src = img;
-    return;
-  } else {
-    // for local images use Ajax if this is a Gecko
-    // browser.
-    // if this is broken windows IE then use the
-    // SlideShow.class.php as the img src and do the cache as
-    // above.
-    if(true) {
-      // The Ajax request returns an image in the form
-      // "data:image/gif;base64," plus base64 encode image
-      // data. This works with Gecko but I am told not
-      // with IE (I don't use Windows so I don't really
-      // know. I did this primairly to try out Ajax and
-      // wanted to see if I could use in instead of the
-      // other option.
+		this.errTimeout = setTimeout(function() { me.errImage(); }, 10000);
+		this.image.onload = function() { me.dispImage(); };
+		this.image.src = img;
+		return;
+	} else {
+		// for local images use Ajax if this is a Gecko
+		// browser.
+		// if this is broken windows IE then use the
+		// SlideShow.class.php as the img src and do the cache as
+		// above.
+		if(Prototype.Browser.Gecko) {
+			// The Ajax request returns an image in the form
+			// "data:image/gif;base64," plus base64 encode image
+			// data. This works with Gecko but I am told not
+			// with IE (I don't use Windows so I don't really
+			// know. I did this primairly to try out Ajax and
+			// wanted to see if I could use in instead of the
+			// other option.
 
-      this.ajaxRequest = $.ajax({
-        url: 'SlideShow.class.php?mode=get&path=' + img,
-        success: function(trans) { me.succImg(trans); },
-        error: function(trans) { me.fail(trans);}
-      });
-                                
-/*
       this.ajaxRequest = new Ajax.Request('SlideShow.class.php?mode=get&path=' + img, {
         method: 'get',
         onSuccess: function(trans) { me.succImg(trans); },
         onFailure: function(trans) { me.fail(trans);}
       });
-*/      
-      return;
-    } else {
-      // This method should work with any browser.
-      // Use the proxy
-      // SlideShow.class.php?path=full_filename&mode=proxy
-      var src = "SlideShow.class.php?mode=proxy&path=" + img;
+      
+			return;
+		} else {
+			// This method should work with any browser.
+			// Use the proxy
+			// SlideShow.class.php?path=full_filename&mode=proxy
+			var src = "SlideShow.class.php?mode=proxy&path=" + img;
       this.src = src;
       this.errTimeout = setTimeout(function() { me.errImage(); }, 10000);
-      this.image.onload = function() { me.dispImage(); };
-      this.image.src = src;
-      return;
-    }
-  }
+			this.image.onload = function() { me.dispImage(); };
+			this.image.src = src;
+			return;
+		}
+	}
 }
 
 // Error function. This method is a callback for the errTimeout timer
@@ -594,18 +562,18 @@ SlideShow.prototype._image = function(img) {
 // work let me know.
 
 SlideShow.prototype.errImage = function() {
-  this.image.onload = '';
-  this.stopSlideshow();
+	this.image.onload = '';
+	this.stopSlideshow();
 
   // If there is an 'errDisp' box we will use it. Otherwise we just use
   // an alert().
   
-  if(this.errDisp) {
-    this.errDisp.css('display', 'block');
-    this.errDisp.html("Image Timed Out: URL="+this.src);
-  } else {
-    alert("Image Timed Out: URL="+this.src);
-  }
+	if(this.errDisp) {
+		this.errDisp.style.display = 'block';
+		this.errDisp.update("Image Timed Out: URL="+this.src);
+	} else {
+		alert("Image Timed Out: URL="+this.src);
+	}
 }
 
 // After the image is loaded display it. 
@@ -624,25 +592,25 @@ SlideShow.prototype.dispImage = function() {
     this.errTimeout =  0;
   }
   
-  this.enlarged = false;
+	this.enlarged = false;
 
   // put the image name into the '<img src='
   // the image has been cached into an Image object.
   
-  this.ssimage[0].src = this.src;
+  this.ssimage.src = this.src;
 
   // adjust the width and height
   
-  if(this.width) {
-    this.disp.width(this.width + 'px');
-    this.ssimage.width(this.width + "px");
-  } else {
-    this.disp.width(ssimage.width + 'px');
-  }
+	if(this.width) {
+		this.disp.style.width = this.width + 'px';
+		this.ssimage.style.width = this.width + "px";
+	} else {
+		this.disp.style.width = ssimage.width + 'px';
+	}
 
-  if(this.height) {
-    this.disp.height(this.height + 'px');
-    this.ssimage.height(this.height + "px");
+	if(this.height) {
+		this.disp.style.height = this.height + 'px';
+		this.ssimage.style.height = this.height + "px";
   } else {
     // At one point I was having problems with the caching and using
     // ssimage height and width. Sometime they were not set. I think
@@ -650,23 +618,23 @@ SlideShow.prototype.dispImage = function() {
     // add 'ssdebug' to the search part of the URL to turn on
     // debugging.
     
-    if(this.ssimage.height() != 0) {
-      this.disp.height(this.ssimage.height() + 'px');
+		if(this.ssimage.height != 0) {
+      this.disp.style.height = this.ssimage.height + 'px';
       if(this.DEBUG)
-        console.log("ssimage:"+this.ssimage.width()+"x"+this.ssimage.height());
+        console.log("ssimage:"+this.ssimage.width+"x"+this.ssimage.height);
     } else {
       // If the error does happend stop the show and display an alert()
       
-      console.log("Ops height==0: "+ this.getImageName());
-      console.log("ssimage:"+this.ssimage.width()+"x"+this.ssimage.height);
+			console.log("Ops height==0: "+ this.getImageName());
+      console.log("ssimage:"+this.ssimage.width+"x"+this.ssimage.height);
       alert("Internal Error. image height is zero. Please notify bartonphillips@gmail.com\n" +
             "The slide show is stopped. To restart click 'reset' or 'stop' then 'start'");
 
-      this.stopped = true;
-    }
-  }
+			this.stopped = true;
+		}
+	}
 
-  // If we are not stopped then set timeout for the NEXT image.
+	// If we are not stopped then set timeout for the NEXT image.
 
   if(!this.stopped) {
     var me = this;
@@ -679,11 +647,11 @@ SlideShow.prototype.dispImage = function() {
 // Make the comma delimited image names into an array.
 
 SlideShow.prototype.succInit = function(trans) {
-  if(trans.match(/SSException/)) {
-    this.fail(trans);
-  } else {
-    this.imageNames = trans.split(",");
-  }
+	if(trans.responseText.match(/SSException/)) {
+		this.fail(trans);
+	} else {
+		this.imageNames = trans.responseText.split(",");
+	}
 }
 
 // Ajax callback.
@@ -696,26 +664,27 @@ SlideShow.prototype.succInit = function(trans) {
 // available on the 'img' properties. If I'm wrong please let me know.
 
 SlideShow.prototype.succImg = function(trans) {
-  if(trans.match(/SSException/)) {
-    this.fail(trans);
+	if(trans.responseText.match(/SSException/)) {
+		this.fail(trans);
   } else {
     var me = this;
     this.image.onload = function() { me.dispImage(); };
-    this.image.src = trans;
-    this.src = trans;
-  }
+    this.image.src = trans.responseText;
+		this.src = trans.responseText;
+	}
 }
 
 // Ajax callback and also used as the end of other failure actions.
 // Use the 'errDisp' box if we have one otherwise use an alert.
 
 SlideShow.prototype.fail = function(trans) {
-  if(this.errDisp) {
-    this.errDisp.css('display', 'block');
-    this.errDisp.html(trans);
-  } else {
-    alert(trans);
-  }
+	if(this.errDisp) {
+		this.errDisp.style.display = 'block';
+		this.errDisp.update(trans.responseText);
+	} else {
+		alert(trans.responseText);
+	}
 }
 
 // END OF CLASS DEFINITION
+

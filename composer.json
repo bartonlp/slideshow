@@ -1,6 +1,6 @@
 {
-    "name": "bartonlp/site-class",
-    "description": "PHP framework to make creating websites easier",
+    "name": "bartonlp/slideshow",
+    "description": "Slide show using a PHP class and a Javascript class",
     "license": "MIT",
     "authors": [
         {
@@ -12,7 +12,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/bartonlp/site-class.git"
+            "url": "https://github.com/bartonlp/slideshow.git"
         }
     ],
     "require": {
@@ -20,12 +20,8 @@
     },
     "minimum-stability": "stable",
     "autoload" : {
-        "classmap": [
-            "includes",
-            "includes/database-engines"
-        ],
         "files": [
-            "includes/database-engines/helper-functions.php"
+            "SlideShow.class.php"
         ]
     }
 }

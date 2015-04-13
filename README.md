@@ -1,25 +1,74 @@
 # slideshow
 
-This was originally written in 2008. This version (April 11, 2015) is a
+The SlideShow PHP class gets a list of images from the local filesystem or from a remote
+web site. 
+
+A JavaScript class displays the images collected by the PHP class.
+
+## History
+
+This was originally written in 2008. This version (April 2015) is a
 rewrite of that code. I have upgraded the code to use more recent inovation.
 
-There is an example file: photos.html.
+## Disclaimer
 
-The photos.html example uses the SlideShow.js and SlideShow.php files.
-You can use SlideShow.js and SlideShow.php together to create slide
-shows for any site. The files are pretty well commented. Look at the
-photos.html for instructions in the <head> section. The SlideShow.js
-has comments at the start and on each method.  The SlideShow.php is
-also well commented.
+I have not tried any of this with IE on any version of Windows. I don't use MS-Windows, I 
+don't like MS-Window, and I don't have MS-Windows. 
+I have always hated that OS for what I think are very good reasons.
 
-Note 1: I have used the prototype.js framework in the javascript parts
-of the examples and in SlideShow.js. The prototype.js file should be
-included with this package, if not check out the prototype web site at
-http://www.prototypejs.org/
- 
-Note 2: I have not tried any of this with IE on any version of
-Windows. I don't use windows any more since I retired. I have always
-hated that OS for what I think are very good reasons.
+I use Linux Mint which evolved from Ubuntu via Debian. I have not tested this package on
+any OS that has not evolved from Debian.
+
+## Install
+
+There are two ways to install the package:
+
+1. Download the zip file from http://github.com/bartonlp/slideshow. Extract the files.
+2. Use 'composer' (https://getcomposer.org/download/):
+   If you don't have composer do:
+```
+curl -sS https://getcomposer.org/installer | php
+```
+Or if you don't have curl:
+```
+php -r "readfile('https://getcomposer.org/installer');" | php
+```
+After composer is downloaded move the 'composer.phar' to '/usr/local/bin/composer' and make
+sure it is executable. 
+
+To install the SlideShow make a project directory as follows:
+```
+mkdir myproject
+cd myproject
+composer require bartonlp/slideshow:dev-master
+```
+The package is under the 'vendor/bartonlp/slideshow' directory. You can run the examples from
+there or copy them to your project root.
+
+
+## Examples
+
+There are several example files:
+
+* photos-prototype.html
+* photos-jquery.html
+* photos-jquery.php
+* carousel.html
+
+'photos-prototype.html' uses the 'prototype1.7.2.js' version of the 'prototype' JavaScript
+framework (http://http://prototypejs.org/).
+
+'photos-jquery.html' uses the jQuery JavaScript framework (http://jquery.com) via a CDN
+(Content Delivery Network).
+
+'photos-jquery.php' is like the above HTML but instantiates the class differently.
+
+'carousel.html' is an adaptation of Harry Armadillo 
+(http://www.codingforums.com/showthread.php?t=58814) nice program. 
+Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code etc.
+
+There are two versions of the JavaScript SlideShow class, one for 'prototype' and one for 
+'jQuery'.
 
 To install this demo do a 'tar xvzf SlideShow.tar.gz' in the 'Document
 Root' of the web server or in a sub-directory. The tar will create a
@@ -27,7 +76,11 @@ Root' of the web server or in a sub-directory. The tar will create a
 untared this demo some place else before you read this README you can
 just do a 'mv photosTest <Docuement Root>'.
 
-NOTE 3: you may need to change the owner and permissions on the files.
+## Configure the Examples
+
+You may need to configure the 'photos-xxx.html' files for your filesystem. At the beginning
+of these files there are several statements in the &lt;head&gt; section.
+
 
 To contact me email to bartonphillips@gmail.com
 

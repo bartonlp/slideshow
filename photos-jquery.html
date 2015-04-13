@@ -30,83 +30,95 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
   
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <!--
   If you run these examples from the 'vendor/bartonlp/slideshow' directory then
   relative paths should work OK.
 
-  If you move the examples to your project root you will have to change these paths
+  If you move the examples to your project root you will have to change this path
   to:
-  <script src="vendor/bartonlp/slideshow/prototype1.7.2.js"></script>
-  <script src="vendor/bartonlp/slideshow/SlideShow-prototype.js"></script>
+  <script src="vendor/bartonlp/slideshow/SlideShow-jquery.js"></script>
   -->
-
-  <script src="prototype1.7.2.js"></script>
-  <script src="SlideShow-prototype.js"></script>
+  <script src="SlideShow-jquery.js"></script>
   <script>
-// Initialize the SlideShow object. See SlideShow.js for
-// information on initialization process.
+jQuery(document).ready(function($) {    
+  // Initialize the SlideShow object. See SlideShow.jquery.js for
+  // information on initialization process.
 
-var ss = new SlideShow({
-  ajaxPath: './', // or from the vendor directory: 'vendor/bartonlp/slideshow/'
-  disp: 'slideshow', // jquery selector
-  errDisp: 'errors', // jquery selector
-  width: '400', // px
-  mode: 'loc', // 'loc' for the local filesystem or 'url' for a remote website
-  enlarge: '1000', // Milliseconds
-  path: './images', // or a fully qualified filesystem path or a website URL.
-  control: {// event: selector
-              start: 'startit',
-              stop: 'stopit',
-              reset: 'resetit',
-              backward: 'back',
-              forward: 'next'
-            }
+  var ss = new SlideShow({
+    ajaxPath: './', // or from the vendor directory: 'vendor/bartonlp/slideshow/'
+    disp: '#slideshow', // jquery selector
+    errDisp: '#errors', // jquery selector
+    width: '400', // px
+    mode: 'loc', // 'loc' for the local filesystem or 'url' for a remote website
+    enlarge: '1000', // Milliseconds
+    path: './images', // or a fully qualified filesystem path or a website URL.
+    control: {// event: selector
+                start: '#startit',
+                stop: '#stopit',
+                reset: '#resetit',
+                backward: '#back',
+                forward: '#next'
+              }
+  });
+
+  $("#path-submit").click(function() {
+    return setNewPath();
+  });
+  
+  $("#getpath").click(function() {
+    var ar = ss.getPath();
+    alert("path="+ar["path"]+ " mode="+ ar["mode"]);
+    return false;
+  });
+
+  $("#int-button").click(function() {
+    return setInterval();
+  });
+  
+  // This is an example of the SlideShow:index event.
+  // Every time the index changes the event is fired on the
+  // slidesshow display div. This can be used to display the
+  // index or anything else that is interesting each time the
+  // image changes.
+
+  function setObserveIndex() {
+    $(document).on("SlideShow:index", newImage);
+  }
+
+  // Callback from event above.
+
+  function newImage(event, index) {
+    $('#index').html("index: " +index + " filename: " + ss.getImageName());
+    return false;
+  }
+
+  // This is called via onclick of the input id='int-button'
+  // The interval is set in the input id='interval' text box.
+
+  function setInterval() {
+    var i = $('#interval');
+    ss.setInterval(i.val());
+    return false;
+  }
+
+  // Set a new path
+
+  function setNewPath() {
+    var path = $('#path');
+    var mode = $('#mode');
+
+    // If there was an error clear it out
+
+    $('#errors').hide();
+
+    console.log('path=%s, mode=%s', path.val(),  mode.val());
+
+    ss.setPath(path.val(), mode.val());
+    path.val(ss.getPath()['path']);
+    ss.setIndex(0); // set the index incase we have been running and index is not zero
+  }
 });
-
-// This is an example of the SlideShow:index event.
-// Every time the index changes the event is fired on the
-// slidesshow display div. This can be used to display the
-// index or anything else that is interesting each time the
-// image changes.
-
-function setObserveIndex() {
-  document.observe("SlideShow:index", newImage);
-}
-
-// Callback from event above.
-
-function newImage(event) {
-  var index =event.memo.index;
-  var indexP = $('index');
-  indexP.update("index: " +index + " filename: " + ss.getImageName());
-  return false;
-}
-
-// This is called via onclick of the input id='int_button'
-// The interval is set in the input id='interval' text box.
-
-function setInterval() {
-  var i = $('interval');
-  ss.setInterval(i.value);
-  return false;
-}
-
-// Set a new path
-
-function setNewPath() {
-  var path = $('path');
-  var mode = $('mode');
-
-  // If there was an error clear it out
-
-  $('errors').style.display = 'none';
-
-  //alert('path=' + path.value + ' mode=' + mode.value);
-
-  ss.setPath(path.value, mode.value);
-  path.value = ss.getPath()['path'];
-  ss.setIndex(0); // set the index incase we have been running and index is not zero
-}
   </script>
 
   <style>
@@ -180,8 +192,7 @@ keeps things contained. -->
    how to change the interval. The function setInterval() is in the
    'head' -->
    
-   <input id='int_button' type='button' value='Submit interval'
-    onclick='return setInterval();'>
+   <input id='int-button' type='button' value='Submit interval'>
    <br><br>
 
    <!-- Let the user select another path and mode -->
@@ -189,17 +200,14 @@ keeps things contained. -->
    <select id='mode'>
       <option name='Local' value='loc'>Local File System</option>
       <option name='URL' value='url'>Remote File System (url)</option>
-   </select>&nbsp;<input id='path_submit' type='button'
-   value='Submit Path' onclick='return setNewPath()'><br>
+   </select>&nbsp;
+   <input id='path-submit' type='button' value='Submit Path'><br>
    <br>
 
    <!-- Example of returning the path which is an array of 'path' and
    'mode' -->
    
-   <input id='getpath' type='button' value='getpath'
-     onclick='var ar = ss.getPath(); alert("path="+ar["path"]+
-          " mode="+ ar["mode"]); return false;'>
-         
+   <input id='getpath' type='button' value='getpath'>
 </div>
 
 <!-- Put this id in the initialization 'errDisp' and errors will

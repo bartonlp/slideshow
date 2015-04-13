@@ -1,22 +1,29 @@
-// Javascript file. Uses prototypejs.
+// Javascript file. Uses jQuery
 /*
-COPYRIGHT:
+Copyright (c) 2015 Barton Phillips All rights reserved.
+Original copyright (c) 2008 Barton Phillips
 
-Copyright Barton Phillips 2008. All rights reserved.
+The MIT License (MIT)
 
-   SlideShow.js (the SlideShow class) is free software. 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-   This library is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Lesser General Public License as published by
-   the Free Software Foundation; either version 2.1 of the License, or (at
-   your option) any later version.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-   This library is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
-   General Public License for more details.
-   http://www.gnu.org/copyleft/lesser.txt
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 */
+
 // The SlideShow Class.
 // The constructor takes an array with the following items possible:
 // path: the path to the pictures
@@ -87,15 +94,15 @@ Copyright Barton Phillips 2008. All rights reserved.
 // works.
 //
 // This code was created by:
-// Barton Phillips. www.bartonphillips.org,
-// www.bartonphillips.dyndns.org,
-// bartonphillips@gmail.com
+// Barton Phillips.
+// Home Page: www.bartonphillips.com,
+// Home:      www.bartonphillips.dyndns.org,
+// Email:     bartonphillips@gmail.com
 // ---------------------------------------------------------------------
 
 var SlideShow;
-if(!SlideShow) {
+if(!SlideShow)
   SlideShow = {};
-}
 
 SlideShow = function(ctrl) {
   this.ajaxPath = './';
@@ -127,14 +134,13 @@ SlideShow = function(ctrl) {
 
   // set event observers for 'load' and 'resize'  
 
-  Event.observe(window, 'load', function() { me.init(); });
-  
-  Event.observe(window, 'resize', function() { me.resize(); });
+  $(window).bind('load', function() {me.init();});
+  $(window).bind('resize', function() {me.resize();});
 
   // If called with NO arguments just return. Not much will work until
   // individual properties are initialized via the setters.
-
-  if(!arguments.length) {
+  
+  if(!arguments.length){
     console.log("NO ARGS");
     return;
   }
@@ -144,7 +150,7 @@ SlideShow = function(ctrl) {
 
   this.disp = ctrl['disp'];
   this.errDisp = ctrl['errDisp'];
-
+         
   if(ctrl['ajaxPath']) this.ajaxPath = ctrl['ajaxPath'];
   if(ctrl['interval']) this.interval = ctrl['interval'];
   if(ctrl['index']) this.index = ctrl['index'];
@@ -160,7 +166,7 @@ SlideShow = function(ctrl) {
     this.start = ctrl['control']['start'];
     this.reset = ctrl['control']['reset'];
   }
-  
+
   this.setPath(ctrl['path'], (ctrl['mode'] || 'loc'));
 }
 
@@ -194,7 +200,7 @@ SlideShow.prototype.getMaxIndex = function() {
 SlideShow.prototype.setIndex = function(index) {
   // set the index value and fire an index event on disp
   this.index = index;
-  this.disp.fire("SlideShow:index", { index: index });
+  this.disp.trigger("SlideShow:index", [ index ]);
 }
 
 SlideShow.prototype.getIndex = function() {
@@ -246,11 +252,12 @@ SlideShow.prototype.getImageName =  function() {
 // NOTE: if you have been running the images the 'index' may need to be
 // reset. Check the imageMaxIndex() and then setIndex if necessary
 
-SlideShow.prototype.setPath = function(path, mode) {
+SlideShow.prototype.setPath =  function(path, mode) {
   this.mode = mode;
   this.path = path;
-
+                 
   if(path) {
+                                               
     var request;
 
     if(mode == 'loc') {
@@ -267,16 +274,17 @@ SlideShow.prototype.setPath = function(path, mode) {
         path = 'http://' + path;
       }
       this.path = path;
+
       request = this.ajaxPath + "SlideShow.class.php?mode=url&path="+path;
     }
 
     var me = this;
-    
-    this.ajaxRequest = new Ajax.Request(request, {
-        method: 'get',
-        onSuccess: function(trans) { me.succInit(trans); },
-        onFailure: function(trans) { me.fail(trans); }
-    }); 
+
+    $.ajax({
+      url: request,
+      success: function(trans) { me.succInit(trans); },
+      error:  function(trans) { me.fail(trans); }
+    });
   }
 }
 
@@ -300,9 +308,9 @@ SlideShow.prototype.init = function() {
 
   if(this.disp) {
     this.disp = $(this.disp);
-    this.disp.observe('click', function(ev) { me.enlarge() });
-    this.disp.update("<img id='ssimage' />");
-    this.ssimage = $('ssimage');
+    this.disp.click(function(ev) { me.enlarge() });
+    this.disp.html("<img id='ssimage' />");
+    this.ssimage = $('#ssimage');
   }
 
   if(this.errDisp) {
@@ -310,34 +318,35 @@ SlideShow.prototype.init = function() {
   }
 
   if(this.width) {
-    this.disp.style.width = this.width + 'px';
+    this.disp.width(this.width + 'px');
   }
   if(this.height) {
-    this.disp.style.height = this.height + 'px';
+    this.disp.height(this.height + 'px');
   }
 
   if(this.start) {
     this.start = $(this.start);
-    this.start.observe('click', function() { me.startSlideshow(); });
+    this.start.click(function() { me.startSlideshow(); });
   }
 
   if(this.stop) {
     this.stop = $(this.stop);
-    this.stop.observe('click', function() { me.stopSlideshow(); });
+    this.stop.click(function() { me.stopSlideshow(); });
   }
 
   if(this.reset) {
     this.reset = $(this.reset);
-    this.reset.observe('click', function() { me.resetSlideshow(); });
+    this.reset.click(function() { me.resetSlideshow(); });
   }
 
   if(this.forward) {
     this.forward = $(this.forward);
-    this.forward.observe('click', function() { me.forwardSlideshow(); });
+    this.forward.click(function() { me.forwardSlideshow(); });
   }
+
   if(this.backward) {
     this.backward = $(this.backward);
-    this.backward.observe('click', function() { me.backwardSlideshow(); });
+    this.backward.click(function() { me.backwardSlideshow(); });
   }
 }
 
@@ -357,12 +366,12 @@ SlideShow.prototype.resize = function() {
   }
 
   if(this.enlarged) {
-    var ss = $('ssimage');
-    ss.style.width = this.enlargeWidth + 'px';
-    var h = ss.height;
+    var ss = $('#ssimage');
+    ss.width(this.enlargeWidth + 'px');
+    var h = ss.height();
 
-    this.disp.style.width = this.enlargeWidth + 'px';
-    this.disp.style.height = h + 'px';
+    this.disp.width(this.enlargeWidth + 'px');
+    this.disp.height(h + 'px');
   }
 }
 
@@ -380,12 +389,12 @@ SlideShow.prototype.startSlideshow = function() {
   // Clear errors if we use errDisp
 
   if(this.errDisp) {
-    this.errDisp.style.display = 'none';
+    this.errDisp.hide();
   }
 
   // once we start hide the start button.
-  
-  this.start.style.visibility = 'hidden';
+
+  this.start.hide(); //style.visibility = 'hidden';
 
   if(this.index > this.imageNames.length -1) {
     this.setIndex(0);
@@ -424,7 +433,7 @@ SlideShow.prototype.stopSlideshow = function() {
   // set the start button message and make it visible
   
   this.start.value = msg;
-  this.start.style.visibility = 'visible';
+  this.start.show(); //style.visibility = 'visible';
 }
 
 // Rest the Slideshow. This function is linked to the 'restart' id's
@@ -435,7 +444,7 @@ SlideShow.prototype.stopSlideshow = function() {
 
 SlideShow.prototype.resetSlideshow = function() {
   this.stopSlideshow();
-  this.start.style.visibility = 'visible';
+  this.start.show(); //style.visibility = 'visible';
   this.start.value = 'Start';
   this.setIndex(0);
   // If you want to display the first image uncomment the following
@@ -509,7 +518,7 @@ SlideShow.prototype.nextImage = function() {
 
 SlideShow.prototype._image = function(img) {
   var me = this;
-  
+
   if(this.mode == 'url') {
     // cache the image and set the onload event. 
 
@@ -525,7 +534,10 @@ SlideShow.prototype._image = function(img) {
     // if this is broken windows IE then use the
     // SlideShow.class.php as the img src and do the cache as
     // above.
-    if(!Prototype.Browser.IE) {
+
+    console.log("navigator", navigator);
+    
+    if(true) {
       // The Ajax request returns an image in the form
       // "data:image/gif;base64," plus base64 encode image
       // data. This works with Gecko but I am told not
@@ -534,21 +546,18 @@ SlideShow.prototype._image = function(img) {
       // wanted to see if I could use in instead of the
       // other option.
 
-      this.ajaxRequest = new Ajax.Request(this.ajaxPath + 'SlideShow.class.php?mode=get&path=' + img, {
-        method: 'get',
-        onSuccess: function(trans) { me.succImg(trans); },
-        onFailure: function(trans) { me.fail(trans);}
+      this.ajaxRequest = $.ajax({
+        url: this.ajaxPath + 'SlideShow.class.php?mode=get&path=' + img,
+        success: function(trans) { me.succImg(trans); },
+        error: function(trans) { me.fail(trans);}
       });
-      
+                                
       return;
     } else {
       // This method should work with any browser.
       // Use the proxy
       // SlideShow.class.php?path=full_filename&mode=proxy
       var src = this.ajaxPath + "SlideShow.class.php?mode=proxy&path=" + img;
-
-      console.log("SRC", src);
-      
       this.src = src;
       this.errTimeout = setTimeout(function() { me.errImage(); }, 10000);
       this.image.onload = function() { me.dispImage(); };
@@ -572,8 +581,8 @@ SlideShow.prototype.errImage = function() {
   // an alert().
   
   if(this.errDisp) {
-    this.errDisp.style.display = 'block';
-    this.errDisp.update("Image Timed Out: URL="+this.src);
+    this.errDisp.css('display', 'block');
+    this.errDisp.html("Image Timed Out: URL="+this.src);
   } else {
     alert("Image Timed Out: URL="+this.src);
   }
@@ -585,7 +594,7 @@ SlideShow.prototype.errImage = function() {
 // callback.
 
 SlideShow.prototype.dispImage = function() {
-  // if url or proxy then onload may never happen so we have set a
+  // if url or proxy then onload my never happen so we have set a
   // timer.
   // However if we get here we want to make sure the timer is not
   // running.
@@ -600,20 +609,20 @@ SlideShow.prototype.dispImage = function() {
   // put the image name into the '<img src='
   // the image has been cached into an Image object.
   
-  this.ssimage.src = this.src;
+  this.ssimage[0].src = this.src;
 
   // adjust the width and height
   
   if(this.width) {
-    this.disp.style.width = this.width + 'px';
-    this.ssimage.style.width = this.width + "px";
+    this.disp.width(this.width + 'px');
+    this.ssimage.width(this.width + "px");
   } else {
-    this.disp.style.width = ssimage.width + 'px';
+    this.disp.width(ssimage.width + 'px');
   }
 
   if(this.height) {
-    this.disp.style.height = this.height + 'px';
-    this.ssimage.style.height = this.height + "px";
+    this.disp.height(this.height + 'px');
+    this.ssimage.height(this.height + "px");
   } else {
     // At one point I was having problems with the caching and using
     // ssimage height and width. Sometime they were not set. I think
@@ -621,15 +630,15 @@ SlideShow.prototype.dispImage = function() {
     // add 'ssdebug' to the search part of the URL to turn on
     // debugging.
     
-    if(this.ssimage.height != 0) {
-      this.disp.style.height = this.ssimage.height + 'px';
+    if(this.ssimage.height() != 0) {
+      this.disp.height(this.ssimage.height() + 'px');
       if(this.DEBUG)
-        console.log("ssimage:"+this.ssimage.width+"x"+this.ssimage.height);
+        console.log("ssimage:"+this.ssimage.width()+"x"+this.ssimage.height());
     } else {
       // If the error does happend stop the show and display an alert()
       
       console.log("Ops height==0: "+ this.getImageName());
-      console.log("ssimage:"+this.ssimage.width+"x"+this.ssimage.height);
+      console.log("ssimage:"+this.ssimage.width()+"x"+this.ssimage.height);
       alert("Internal Error. image height is zero. Please notify bartonphillips@gmail.com\n" +
             "The slide show is stopped. To restart click 'reset' or 'stop' then 'start'");
 
@@ -650,11 +659,10 @@ SlideShow.prototype.dispImage = function() {
 // Make the comma delimited image names into an array.
 
 SlideShow.prototype.succInit = function(trans) {
-  if(trans.responseText.match(/SSException/)) {
+  if(trans.match(/SSException/)) {
     this.fail(trans);
   } else {
-    this.imageNames = trans.responseText.split(",");
-    console.log("imageNames", this.imageNames);
+    this.imageNames = trans.split(",");
   }
 }
 
@@ -668,13 +676,13 @@ SlideShow.prototype.succInit = function(trans) {
 // available on the 'img' properties. If I'm wrong please let me know.
 
 SlideShow.prototype.succImg = function(trans) {
-  if(trans.responseText.match(/SSException/)) {
+  if(trans.match(/SSException/)) {
     this.fail(trans);
   } else {
     var me = this;
     this.image.onload = function() { me.dispImage(); };
-    this.image.src = trans.responseText;
-    this.src = trans.responseText;
+    this.image.src = trans;
+    this.src = trans;
   }
 }
 
@@ -683,12 +691,11 @@ SlideShow.prototype.succImg = function(trans) {
 
 SlideShow.prototype.fail = function(trans) {
   if(this.errDisp) {
-    this.errDisp.style.display = 'block';
-    this.errDisp.update(trans.responseText);
+    this.errDisp.css('display', 'block');
+    this.errDisp.html(trans);
   } else {
-    alert(trans.responseText);
+    alert(trans);
   }
 }
 
 // END OF CLASS DEFINITION
-

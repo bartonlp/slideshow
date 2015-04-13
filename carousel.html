@@ -11,20 +11,18 @@
   it in the 'head'.
   -->
    
-  <script src='prototype.js'></script>
+  <script src='prototype1.7.2.js'></script>
 
   <script>
 // I, Barton Phillips, made
 // modification to use SlideShow.class.php.
-// Note you can't get the list of images from
-// http://images.amazon.com/images/P/
-// because they have an index.html in that directory with a 1px jpg
-// in it. SlideShow.class.php can only see directories without a default
-// html in it. I have changed the location to sites that I developed
+// SlideShow.class.php can only see directories without a default
+// html in it that allow listing (via .htaccess etc.)
+// I have changed the location to sites that I developed
 // that have a clean 'pictures' directory.
 // You can also use the images downloaded with the class by using
 // 'url' and a full http://path or use 'loc' with a path relative to
-// the SlideShow.class.php file.
+// the SlideShow.class.php file or a fully qualified path.
 
 var imageNames = new Array();
 
@@ -36,8 +34,8 @@ var imageNames = new Array();
 //var request =
 //  'SlideShow.class.php?mode=url&path=http://www.granbyrotary.org/SilverCreet-Oct-1-2013';
 
-var request =
-  'SlideShow.class.php?mode=url&path=http://www.granbyrotary.org/images';
+//var request =
+//  'SlideShow.class.php?mode=url&path=http://www.granbyrotary.org/images';
 
 
 // NOTE: you can also use the images that were downloaded with the
@@ -46,7 +44,7 @@ var request =
 // 'images' directory can be seen by the server under 'Document
 // Root'.
 
-//var request = 'SlideShow.class.php?mode=loc&path=images';
+var request = 'SlideShow.class.php?mode=loc&path=images';
 
 // Make an Ajax request.
 // set asynchronous to false to do synchronous so we get the pictures

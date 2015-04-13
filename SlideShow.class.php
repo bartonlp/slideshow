@@ -98,35 +98,55 @@ SOFTWARE.
 
 class SlideShow {
   private $mode;
+  private $path;
+  private $echo;
   
-  public function __construct($mode, $path) {
+  public function __construct($mode, $path, $echo=true) {
     $this->mode = $mode;
+    $this->path = $path;
+    $this->echo = $echo;
+    if($echo) {
+      $this->getImageNames();
+    }
+  }
 
+  // getImageNames()
+  // Get all the image names from the path and mode in $this->path and $this->mode
+  // set by the constructor.
+  // $echo: should we echo or return results.
+  
+  public function getImageNames($echo=null) {
+    $echo = $echo ? $echo : $this->echo;
+    $path = $this->path;
+
+    $ret = null;
+    
     try {
-      switch($mode) {
+      switch($this->mode) {
         case 'loc':
-          $this->getLocal($path);
+          $ret = $this->getLocal($path, $echo);
           break;
 
           case 'url':
-          $this->getUrl($path);
+          $ret = $this->getUrl($path, $echo);
           break;
 
           case 'get':
           case 'proxy':
-          $this->getImage($mode, $path);
+          $ret = $this->getImage($this->mode, $path, $echo);
           break;
 
           default:
-          throw new SSException("invaliid mode: '$mode'");
+          throw new SSException("invaliid mode: '$this->mode'");
       }
     } catch (Exception $e) {
       Header("Content-type: text/html");
       echo $e->__toString();
     }
+    return $ret;
   }
 
-  private function getLocal($path) {
+  private function getLocal($path, $echo) {
     // Get the list form the local file system
     // The path can be relative or absolute.
     // If relative it is relative to the location of SlideShow.php
@@ -155,12 +175,23 @@ class SlideShow {
     }
     // $ar is an array of filenames so make it a comma seperated list
 
-    Header("Content-type: text/plain");
+    //Header("Content-type: text/plain");
 
-    echo implode(',', $ar);
+//    $root = $_SERVER['DOCUMENT_ROOT'];
+//    $ar = preg_replace("~^$root(.*)~", "$1", $ar);
+
+    if($echo) {
+      echo implode(',', $ar);
+    } else {
+      $str = '';
+      foreach($ar as $v) {
+        $str .= "'$v',";
+      }
+      return rtrim($str, ',');
+    }
   }
 
-  private function getUrl($path) {
+  private function getUrl($path, $echo) {
     // path is a FULLY qualified url. That is it has http:// as a
     // start.
     // You could use curl to do this or fopen or file_get_contents. I
@@ -198,14 +229,25 @@ class SlideShow {
       }
     }
     $data = rtrim($data, ',');  // strip off the trailing comma
-    Header("Content-type: text/plain");
-    echo $data;
+    //Header("Content-type: text/plain");
+
+    if($echo) {
+      echo $data;
+    } else {
+      return $data;
+    }
   }
 
-  private function getImage($mode, $path) {
+  // getImage()
+  // $mode: get or proxy
+  // $path: path to images
+  // $echo: if true we echo results else return them.
+  
+  
+  private function getImage($mode, $path, $echo) {
     // For IE and some others we can't use the
     // "data:image/gif;base64," format so the javascript creates am
-    // image that looks like <img src='SlideShow.php?path=filename'
+    // image that looks like <img src='SlideShow.class.php?path=filename'
     // .../>
 
     // get the extension of the file
@@ -215,11 +257,13 @@ class SlideShow {
     if(!preg_match('/(gif)|(jpg)|(png)/', $ext)) {
       throw new SSException("not an image extension: ($ext)");
     }
-    
-    $data = @file_get_contents($path);
+
+    $filesize= filesize("$path");
+    $data = @file_get_contents("$path");
 
     if(!$data) {
       $err = error_get_last();
+
       
       if($err === null) {
         throw new SSException("url not found");
@@ -228,28 +272,44 @@ class SlideShow {
       }
     }
 
-    if($mode == 'proxy') {
-      // Non Gecko browsers
+    // $mode is 'get' or 'proxy'
 
-      Header("Content-type: image/$ext");
-      echo $data;
+    if($mode == 'proxy') {
+      // Browser does not support base64 encoded url's
+
+      if($echo) {
+        header("Content-type: image/$ext");
+        header("Content-length: $filesize");
+        echo $data;
+      } else {
+        return $data;
+      }
     } else {
+      // $mode must be 'get' because it is not 'proxy'
       // This is a version for the local files that uses the
       // "data:image/gif;base64," format via an Ajax call. The above
       // method will work for all browsers but I thought this was neat
       // so I decided to use it on Gecko grade browsers just for fun.
       // Take the data and make it base64
 
-      Header("Content-type: text/plain");
       $data = base64_encode($data);
-      echo "data:image/$ext;base64,$data";
+      if($echo) {
+        header("Content-type: text/plain");
+        header("Content-length: ". strlen($data));
+        echo "data:image/$ext;base64,$data";
+      } else {
+        return "data:image/$ext;base64,$data";
+      }
     }  
   }
 }
 
+// Only instantiate if $_GET has mode and path.
 // every time this file is called we instantiate the class anew.
 
-new SlideShow($_GET['mode'], $_GET['path']);
+if(isset($_GET['mode']) && isset($_GET['path'])) {
+  new SlideShow($_GET['mode'], $_GET['path']);
+}
 
 // ------------------------------------------------------
 // SSException class for SlideShow exceptions

@@ -9,7 +9,7 @@ A JavaScript class displays the images collected by the PHP class.
 
 ## History
 
-This was originally written in 2008. This version (April 2015) is a
+This was originally written in 2008. This version (April 2015, October 2022) is a
 rewrite of that code. I have upgraded the code to use more recent inovation.
 
 ## Disclaimer
@@ -47,7 +47,6 @@ composer require bartonlp/slideshow:dev-master
 The package is under the 'vendor/bartonlp/slideshow' directory. You can run the examples from
 there or copy them to your project root.
 
-
 ## Examples
 
 There are several example files:
@@ -81,7 +80,7 @@ To contact me email to bartonphillips@gmail.com
 Enjoy
 
 Barton Phillips
- Copyright &copy; 2022 Barton Phillips
- bartonphillips@gmail.com
- http://www.bartonphillips.com
+ Copyright &copy; 2022 Barton Phillips  
+ bartonphillips@gmail.com  
+ http://www.bartonphillips.com  
  Last Modified 2022-10-17

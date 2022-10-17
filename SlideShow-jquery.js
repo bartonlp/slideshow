@@ -268,13 +268,15 @@ SlideShow.prototype.setPath =  function(path, mode) {
     } else {
       // remote file system
 
-      var m = /^http:\/\//;
+      var m = /^https:\/\//;
 
       if(!path.match(m)) {
-        path = 'http://' + path;
+        path = 'https://' + path;
       }
       this.path = path;
 
+      console.log("path: " +path);
+      
       request = this.ajaxPath + "SlideShow.class.php?mode=url&path="+path;
     }
 
@@ -631,14 +633,15 @@ SlideShow.prototype.dispImage = function() {
     // debugging.
     
     if(this.ssimage.height() != 0) {
-      this.disp.height(this.ssimage.height() + 'px');
+      //this.disp.height(this.ssimage.height() + 'px');
+      this.disp.height(this.height +'px');
       if(this.DEBUG)
-        console.log("ssimage:"+this.ssimage.width()+"x"+this.ssimage.height());
+        console.log("ssimage: width="+this.ssimage.width()+", height="+this.ssimage.height());
     } else {
       // If the error does happend stop the show and display an alert()
       
       console.log("Ops height==0: "+ this.getImageName());
-      console.log("ssimage:"+this.ssimage.width()+"x"+this.ssimage.height);
+      console.log("ssimage: width="+this.ssimage.width()+", height="+this.ssimage.height);
       alert("Internal Error. image height is zero. Please notify bartonphillips@gmail.com\n" +
             "The slide show is stopped. To restart click 'reset' or 'stop' then 'start'");
 
@@ -663,6 +666,7 @@ SlideShow.prototype.succInit = function(trans) {
     this.fail(trans);
   } else {
     this.imageNames = trans.split(",");
+    //console.log("succInit imageNames: ", this.imageNames);
   }
 }
 

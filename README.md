@@ -1,5 +1,7 @@
 # slideshow
 
+## BLP 2022-10-17 - updated. Removed prototype logic. Works with php 8.1
+
 The SlideShow PHP class gets a list of images from the local filesystem or from a remote
 web site. 
 
@@ -50,13 +52,9 @@ there or copy them to your project root.
 
 There are several example files:
 
-* photos-prototype.html
 * photos-jquery.html
 * photos-jquery.php
 * carousel.html
-
-'photos-prototype.html' uses the 'prototype1.7.2.js' version of the 'prototype' JavaScript
-framework (http://http://prototypejs.org/).
 
 'photos-jquery.html' uses the jQuery JavaScript framework (http://jquery.com) via a CDN
 (Content Delivery Network).
@@ -67,9 +65,6 @@ framework (http://http://prototypejs.org/).
 (http://www.codingforums.com/showthread.php?t=58814) nice program. 
 Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code etc.
 
-There are two versions of the JavaScript SlideShow class, one for 'prototype' and one for 
-'jQuery'.
-
 To install this demo do a 'tar xvzf SlideShow.tar.gz' in the 'Document
 Root' of the web server or in a sub-directory. The tar will create a
 'photosTest' directory and 'photosTest/images'. If you have already
@@ -78,16 +73,15 @@ just do a 'mv photosTest <Docuement Root>'.
 
 ## Configure the Examples
 
-You may need to configure the 'photos-xxx.html' files for your filesystem. At the beginning
-of these files there are several statements in the &lt;head&gt; section.
-
+You may need to configure the 'photos-jquery.html' file for your filesystem. At the beginning
+of the file there are several statements in the &lt;head&gt; section.
 
 To contact me email to bartonphillips@gmail.com
 
 Enjoy
 
 Barton Phillips
- Copyright &copy; 2015 Barton Phillips
+ Copyright &copy; 2022 Barton Phillips
  bartonphillips@gmail.com
  http://www.bartonphillips.com
-
+ Last Modified 2022-10-17

@@ -1,6 +1,10 @@
 <?php
 // PHP Class for SlideShow.
-// BLP 2015-04-11 -- Update code
+// BLP 2022-10-17 - Important NOTE
+//***************************************************************************************
+// NOTE: the directory MUST be indexable! That is .htaccess must have 'Options +Indexes'!
+//***************************************************************************************
+// BLP 2015-04-11 - Update code
 /*
 The MIT License (MIT)
 
@@ -200,13 +204,20 @@ class SlideShow {
     // although most modern distributions do have it, and second I
     // don't need to do fgets's to get the contents.
 
+    //***************************************************************************************
+    // NOTE: the directory MUST be indexable! That is .htaccess must have 'Options +Indexes'!
+    //***************************************************************************************
+    
     if(substr($path, -1) != '/') {
       $path .= '/'; // if no terminating / put one there.
     }
 
-    $data = @file_get_contents($path);
+    $data = file_get_contents($path);
 
+    error_log("path=$path, data: " . print_r($data, true));
+    
     if(!$data) {
+      error_log("error");
       $err = error_get_last();
       
       if($err === null) {

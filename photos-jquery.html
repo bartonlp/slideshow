@@ -29,8 +29,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-  
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous"></script>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
   <!--
   If you run these examples from the 'vendor/bartonlp/slideshow' directory then
   relative paths should work OK.
@@ -40,86 +43,6 @@ SOFTWARE.
   <script src="vendor/bartonlp/slideshow/SlideShow-jquery.js"></script>
   -->
   <script src="SlideShow-jquery.js"></script>
-  <script>
-jQuery(document).ready(function($) {    
-  // Initialize the SlideShow object. See SlideShow.jquery.js for
-  // information on initialization process.
-
-  var ss = new SlideShow({
-    ajaxPath: './', // or from the vendor directory: 'vendor/bartonlp/slideshow/'
-    disp: '#slideshow', // jquery selector
-    errDisp: '#errors', // jquery selector
-    width: '400', // px
-    mode: 'loc', // 'loc' for the local filesystem or 'url' for a remote website
-    enlarge: '1000', // Milliseconds
-    path: './images', // or a fully qualified filesystem path or a website URL.
-    control: {// event: selector
-                start: '#startit',
-                stop: '#stopit',
-                reset: '#resetit',
-                backward: '#back',
-                forward: '#next'
-              }
-  });
-
-  $("#path-submit").click(function() {
-    return setNewPath();
-  });
-  
-  $("#getpath").click(function() {
-    var ar = ss.getPath();
-    alert("path="+ar["path"]+ " mode="+ ar["mode"]);
-    return false;
-  });
-
-  $("#int-button").click(function() {
-    return setInterval();
-  });
-  
-  // This is an example of the SlideShow:index event.
-  // Every time the index changes the event is fired on the
-  // slidesshow display div. This can be used to display the
-  // index or anything else that is interesting each time the
-  // image changes.
-
-  function setObserveIndex() {
-    $(document).on("SlideShow:index", newImage);
-  }
-
-  // Callback from event above.
-
-  function newImage(event, index) {
-    $('#index').html("index: " +index + " filename: " + ss.getImageName());
-    return false;
-  }
-
-  // This is called via onclick of the input id='int-button'
-  // The interval is set in the input id='interval' text box.
-
-  function setInterval() {
-    var i = $('#interval');
-    ss.setInterval(i.val());
-    return false;
-  }
-
-  // Set a new path
-
-  function setNewPath() {
-    var path = $('#path');
-    var mode = $('#mode');
-
-    // If there was an error clear it out
-
-    $('#errors').hide();
-
-    console.log('path=%s, mode=%s', path.val(),  mode.val());
-
-    ss.setPath(path.val(), mode.val());
-    path.val(ss.getPath()['path']);
-    ss.setIndex(0); // set the index incase we have been running and index is not zero
-  }
-});
-  </script>
 
   <style>
 #footer {
@@ -148,7 +71,7 @@ jQuery(document).ready(function($) {
 The SlideShow.php script sets another load for the init() method via the
 DOM event module. Both events are fired on load. -->
 
-<body onload="setObserveIndex();">
+<body onload=""setObserveIndex()">
 
 <!-- Place holder for a header -->
 
@@ -218,6 +141,85 @@ happend here -->
 <!-- just a place holder for a footer if one were needed -->
 
 <div id="footer">That's All Folks</div>
+
+<script>
+  // Initialize the SlideShow object. See SlideShow.jquery.js for
+  // information on initialization process.
+
+  var ss = new SlideShow({
+    ajaxPath: './', // or from the vendor directory: 'vendor/bartonlp/slideshow/'
+    disp: '#slideshow', // jquery selector
+    errDisp: '#errors', // jquery selector
+    width: '400', // px
+    mode: 'loc', // 'loc' for the local filesystem or 'url' for a remote website
+    enlarge: '1000', // Milliseconds
+    path: './images', // or a fully qualified filesystem path or a website URL.
+    control: {// event: selector
+                start: '#startit',
+                stop: '#stopit',
+                reset: '#resetit',
+                backward: '#back',
+                forward: '#next'
+              }
+  });
+
+  $("#path-submit").click(function() {
+    return setNewPath();
+  });
+  
+  $("#getpath").click(function() {
+    var ar = ss.getPath();
+    alert("path="+ar["path"]+ " mode="+ ar["mode"]);
+    return false;
+  });
+
+  $("#int-button").click(function() {
+    return setInterval();
+  });
+  
+  // This is an example of the SlideShow:index event.
+  // Every time the index changes the event is fired on the
+  // slidesshow display div. This can be used to display the
+  // index or anything else that is interesting each time the
+  // image changes.
+
+  // Callback from event above.
+
+  function newImage(event, index) {
+    $('#index').html("index: " +index + " filename: " + ss.getImageName());
+    return false;
+  }
+
+  // This is called via onclick of the input id='int-button'
+  // The interval is set in the input id='interval' text box.
+
+  function setInterval() {
+    var i = $('#interval');
+    ss.setInterval(i.val());
+    return false;
+  }
+
+  // Set a new path
+
+  function setNewPath() {
+    var path = $('#path');
+    var mode = $('#mode');
+
+    // If there was an error clear it out
+
+    $('#errors').hide();
+
+    //console.log('path=%s, mode=%s', path.val(),  mode.val());
+
+    ss.setPath(path.val(), mode.val());
+    path.val(ss.getPath()['path']);
+    ss.setIndex(0); // set the index incase we have been running and index is not zero
+  }
+
+  function setObserveIndex() {
+    $(document).on("SlideShow:index", newImage);
+  }
+</script>
 
 </body>
 </html>

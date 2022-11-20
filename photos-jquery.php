@@ -2,9 +2,8 @@
 //require_once("vendor/autoload.php");
 require_once('SlideShow.class.php');
 
-$ss = new SlideShow('loc', './images', false); //'url', 'http://www.granbyrotary.org/images')
+$ss = new SlideShow('loc', './images', true); // args: mode, path, echo. mode can be 'loc', 'url', 'get' or 'proxy'
 $names = $ss->getImageNames();
-//$names = explode(',', $imageNames);
 
 echo <<<EOF
 <!DOCTYPE html>
@@ -12,7 +11,7 @@ echo <<<EOF
 <head>
   <title>Photo Slide Show Demo</title>
   <!-- jQuery -->
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script>
 // Initialize the SlideShow object. See SlideShow.js for
 // information on initialization process.
@@ -22,7 +21,6 @@ jQuery(document).ready(function($) {
 
   function next(i) {
     console.log(i);
-//    $("#slideshow").html("<img src='"+names[i]+"'>");
     $("#slideshow").html("<img src='SlideShow.class.php?mode=proxy&path="+names[i]+"'>");
     if(++i >= names.length) {
       i = 0;

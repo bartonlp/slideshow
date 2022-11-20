@@ -185,14 +185,13 @@ class SlideShow {
 //    $ar = preg_replace("~^$root(.*)~", "$1", $ar);
 
     if($echo) {
-      echo implode(',', $ar);
-    } else {
-      $str = '';
-      foreach($ar as $v) {
-        $str .= "'$v',";
-      }
-      return rtrim($str, ',');
+      echo implode('<br>', $ar);
     }
+    $str = '';
+    foreach($ar as $v) {
+      $str .= "'$v',";
+    }
+    return rtrim($str, ',');
   }
 
   private function getUrl($path, $echo) {

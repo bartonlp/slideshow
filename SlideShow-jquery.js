@@ -68,7 +68,7 @@ SOFTWARE.
 // backwardSlideshow(),
 // forwardSlideshow(),
 // nextImage(),
-// The following are really inteded for interanal use:
+// The following are really inteded for internal use:
 // _image(),
 // errImage(),
 // dispImage(),

@@ -1,5 +1,6 @@
 # slideshow
 
+## BLP 2022-11-20 - Small fixes.
 ## BLP 2022-10-17 - updated. Removed prototype logic. Works with php 8.1
 
 The SlideShow PHP class gets a list of images from the local filesystem or from a remote
@@ -9,8 +10,8 @@ A JavaScript class displays the images collected by the PHP class.
 
 ## History
 
-This was originally written in 2008. This version (April 2015, October 2022) is a
-rewrite of that code. I have upgraded the code to use more recent inovation.
+This was originally written in 2008. This version is a
+rewrite of that code. I have upgraded the code to use more recent inovations.
 
 ## Disclaimer
 
@@ -18,7 +19,7 @@ I have not tried any of this with IE on any version of Windows. I don't use MS-W
 don't like MS-Window, and I don't have MS-Windows. 
 I have always hated that OS for what I think are very good reasons.
 
-I use Linux Mint which evolved from Ubuntu via Debian. I have not tested this package on
+I use Ubuntu Mate. I have not tested this package on
 any OS that has not evolved from Debian.
 
 ## Install
@@ -55,20 +56,14 @@ There are several example files:
 * photos-jquery.php
 * carousel.html
 
-'photos-jquery.html' uses the jQuery JavaScript framework (http://jquery.com) via a CDN
+'photos-jquery.html' uses 'SlideShow-jquery.js' and the jQuery JavaScript framework (http://jquery.com) via a CDN
 (Content Delivery Network).
 
-'photos-jquery.php' is like the above HTML but instantiates the class differently.
+'photos-jquery.php' uses 'SlideShow.class.php'.
 
 'carousel.html' is an adaptation of Harry Armadillo 
 (http://www.codingforums.com/showthread.php?t=58814) nice program. 
 Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code etc.
-
-To install this demo do a 'tar xvzf SlideShow.tar.gz' in the 'Document
-Root' of the web server or in a sub-directory. The tar will create a
-'photosTest' directory and 'photosTest/images'. If you have already
-untared this demo some place else before you read this README you can
-just do a 'mv photosTest <Docuement Root>'.
 
 ## Configure the Examples
 
@@ -83,4 +78,4 @@ Barton Phillips
  Copyright &copy; 2022 Barton Phillips  
  bartonphillips@gmail.com  
  http://www.bartonphillips.com  
- Last Modified 2022-10-17
+ Last Modified 2022-11-20

@@ -29,11 +29,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// This Class requires PHP5.4+
+// ------------------------------------------------------
+// SSException class for SlideShow exceptions
+
+class SSException extends Exception {
+  // message, code. file, and line are members of Exception
+  
+  public function __construct($message, $code=-1) {
+    parent::__construct($message, $code);
+  }
+
+  public function __toString() {
+    return __CLASS__ . "{ [FILE=$this->file] [LINE=$this->line] [Error='$this->message'] }";
+  }
+}
+
+// Has this been called from an Ajax client?
+// If $_GET['mode'] and $_GET['path'] are set then we will instantiate the class.
+// Every time this file is called via Ajax we instantiate the class anew.
+
+if(isset($_GET['mode']) && isset($_GET['path'])) {
+  //error_log("GET: mode={$_GET['mode']}, path={$_GET['path']}");
+  
+  new SlideShow($_GET['mode'], $_GET['path']);
+}
+
+// This Class requires PHP8.1
 //
 // This Class works with any javascript. I have provided a javascript
 // class to demonstrate how it is used. I have also modified a
-// carousel slideshow from http://www.dynamicdrive.com your can
+// carousel slideshow from http://www.dynamicdrive.com you can
 // locate the original at
 // http://www.dynamicdrive.com/dynamicindex14/carousel2.htm.
 //
@@ -50,28 +75,25 @@ SOFTWARE.
 //   <img src='SlideShow.php?mode=proxy&path="'+imagearray[i]+'"'>
 //
 // The images are retrieved into an array via an Ajax call like this
-// using prototype.js:
 //   request = "SlideShow.php?mode=loc&path="+path;
 //   or
 //   request = "SlideShow.php?mode=url&path="+path;
 //
-//   then
+//   then to get the path
 //
-//   ajaxRequest = new Ajax.Request(request, {
-//      method: 'get', asynchronous: false, /* do it sync so we get
-//        the images before anything else. */
+//   $.ajax({
+//     url: request,
+//     success: function(trans) { me.succInit(trans); },
+//     error:  function(trans) { me.fail(trans); }
+//   });
 //
-//      onSuccess: function(trans) { succInit(trans); },
-//      onFailure: function(trans) { fail(trans); } 
-//   }
-//   function succInit(trans) {
-//     if(trans.responseText.match(/SSException/)) {
-//       fail(trans);  // do something on exception
-//     } else {
-//       /* imageNames is an array */
-//       imageNames = trans.responseText.split(",");
-//     }
-//   }
+//   The images are retrieved for Gecko browsers via
+//
+//   this.ajaxRequest = $.ajax({
+//     url: this.ajaxPath + 'SlideShow.class.php?mode=get&path=' + img,
+//     success: function(trans) { me.succImg(trans); },
+//     error: function(trans) { me.fail(trans);}
+//   });
 //
 // The Javascript communicates with this class via GET queries.
 // The format is:
@@ -98,14 +120,21 @@ SOFTWARE.
 // email: bartonphillips@gmail.com
 // -----------------------------------------------------------------------
 
-// PHP5 style class
-
 class SlideShow {
   private $mode;
   private $path;
   private $echo;
+
+  /* __construct
+   * @param string mode. Values 'loc', 'url', 'get', 'proxy'
+   * @param string path. The path of the photos
+   * @param bool echo. Determins if we 'echo' results back to an Ajax caller. Defaults to true.
+   */
   
   public function __construct($mode, $path, $echo=true) {
+    //error_log("GET: mode={$_GET['mode']}, path={$_GET['path']}, echo={$_GET['echo']}");
+    //error_log("construct: mode=$mode, path=$path, echo=$echo");
+    
     $this->mode = $mode;
     $this->path = $path;
     $this->echo = $echo;
@@ -117,40 +146,48 @@ class SlideShow {
   // getImageNames()
   // Get all the image names from the path and mode in $this->path and $this->mode
   // set by the constructor.
-  // $echo: should we echo or return results.
-  
-  public function getImageNames($echo=null) {
+  // @param bool echo. Should we echo to an Ajax client or return results.
+  // @return string
+   
+  public function getImageNames(bool $echo=null):string {
     $echo = $echo ? $echo : $this->echo;
     $path = $this->path;
 
     $ret = null;
-    
+
     try {
       switch($this->mode) {
         case 'loc':
           $ret = $this->getLocal($path, $echo);
           break;
 
-          case 'url':
+        case 'url':
           $ret = $this->getUrl($path, $echo);
           break;
 
-          case 'get':
-          case 'proxy':
+        case 'get':
+        case 'proxy':
           $ret = $this->getImage($this->mode, $path, $echo);
           break;
 
-          default:
+        default:
           throw new SSException("invaliid mode: '$this->mode'");
       }
     } catch (Exception $e) {
       Header("Content-type: text/html");
       echo $e->__toString();
     }
+
     return $ret;
   }
 
-  private function getLocal($path, $echo) {
+  // getLocal
+  // @param string path
+  // @param bool echo. If true does an 'echo' to an Ajax client.
+  // @return string.
+  // This also can 'echo' results to an Ajax client.
+  
+  private function getLocal(string $path, bool $echo):string {
     // Get the list form the local file system
     // The path can be relative or absolute.
     // If relative it is relative to the location of SlideShow.php
@@ -179,22 +216,22 @@ class SlideShow {
     }
     // $ar is an array of filenames so make it a comma seperated list
 
-    //Header("Content-type: text/plain");
-
-//    $root = $_SERVER['DOCUMENT_ROOT'];
-//    $ar = preg_replace("~^$root(.*)~", "$1", $ar);
-
     if($echo) {
-      echo implode('<br>', $ar);
+      // This echo is used by SlideShow-jquery.js when it does the ajax call in setPath(path, mode)
+      echo implode(',', $ar);
+      return '';
+    } else {
+      $str = '';
+      foreach($ar as $v) {
+        $str .= "'$v',";
+      }
+      return rtrim($str, ',');
     }
-    $str = '';
-    foreach($ar as $v) {
-      $str .= "'$v',";
-    }
-    return rtrim($str, ',');
   }
 
-  private function getUrl($path, $echo) {
+  // Like above but for url.
+  
+  private function getUrl(string $path, bool $echo):string {
     // path is a FULLY qualified url. That is it has http:// as a
     // start.
     // You could use curl to do this or fopen or file_get_contents. I
@@ -213,10 +250,7 @@ class SlideShow {
 
     $data = file_get_contents($path);
 
-    error_log("path=$path, data: " . print_r($data, true));
-    
     if(!$data) {
-      error_log("error");
       $err = error_get_last();
       
       if($err === null) {
@@ -242,23 +276,23 @@ class SlideShow {
     //Header("Content-type: text/plain");
 
     if($echo) {
+      // echo the data to the Ajax function that called us.
       echo $data;
+      return '';
     } else {
       return $data;
     }
   }
 
   // getImage()
-  // $mode: get or proxy
-  // $path: path to images
-  // $echo: if true we echo results else return them.
+  // @param string mode: get or proxy
+  // @param string path: path to images
+  // @param bool echo: if true we echo results else return them.
   
-  
-  private function getImage($mode, $path, $echo) {
+  private function getImage(string $mode, string $path, bool $echo):string {
     // For IE and some others we can't use the
-    // "data:image/gif;base64," format so the javascript creates am
-    // image that looks like <img src='SlideShow.class.php?path=filename'
-    // .../>
+    // "data:image/gif;base64," format so the javascript creates an
+    // image that looks like <img src='SlideShow.class.php?path=filename', .../>
 
     // get the extension of the file
 
@@ -291,6 +325,7 @@ class SlideShow {
         header("Content-type: image/$ext");
         header("Content-length: $filesize");
         echo $data;
+        return '';
       } else {
         return $data;
       }
@@ -307,6 +342,7 @@ class SlideShow {
         header("Content-type: text/plain");
         header("Content-length: ". strlen($data));
         echo "data:image/$ext;base64,$data";
+        return '';
       } else {
         return "data:image/$ext;base64,$data";
       }
@@ -314,24 +350,3 @@ class SlideShow {
   }
 }
 
-// Only instantiate if $_GET has mode and path.
-// every time this file is called we instantiate the class anew.
-
-if(isset($_GET['mode']) && isset($_GET['path'])) {
-  new SlideShow($_GET['mode'], $_GET['path']);
-}
-
-// ------------------------------------------------------
-// SSException class for SlideShow exceptions
-
-class SSException extends Exception {
-  // message, code. file, and line are members of Exception
-  
-  public function __construct($message, $code=-1) {
-    parent::__construct($message, $code);
-  }
-
-  public function __toString() {
-    return __CLASS__ . "{ [FILE=$this->file] [LINE=$this->line] [Error='$this->message'] }";
-  }
-}

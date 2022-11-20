@@ -79,10 +79,6 @@ SOFTWARE.
 // class SlideShow.
 // The demonstration file photos.html is also provided.
 //
-// NOTE: this javascript file relies on the prototype.js framework.
-// This framework is available at www.prototype.org. The framework is
-// avaiable for download and there is extensive documentation there.
-//
 // NOTE: Trick! To use events from withing this (or any Class) you must
 // use a closure. For example:
 // The class xx.
@@ -134,8 +130,8 @@ SlideShow = function(ctrl) {
 
   // set event observers for 'load' and 'resize'  
 
-  $(window).bind('load', function() {me.init();});
-  $(window).bind('resize', function() {me.resize();});
+  $(window).on('load', function() {me.init();});
+  $(window).on('resize', function() {me.resize();});
 
   // If called with NO arguments just return. Not much will work until
   // individual properties are initialized via the setters.
@@ -252,12 +248,11 @@ SlideShow.prototype.getImageName =  function() {
 // NOTE: if you have been running the images the 'index' may need to be
 // reset. Check the imageMaxIndex() and then setIndex if necessary
 
-SlideShow.prototype.setPath =  function(path, mode) {
+SlideShow.prototype.setPath = function(path, mode) {
   this.mode = mode;
   this.path = path;
                  
   if(path) {
-                                               
     var request;
 
     if(mode == 'loc') {
@@ -275,13 +270,16 @@ SlideShow.prototype.setPath =  function(path, mode) {
       }
       this.path = path;
 
-      console.log("path: " +path);
-      
       request = this.ajaxPath + "SlideShow.class.php?mode=url&path="+path;
     }
 
+    console.log("request: " +request);
+
     var me = this;
 
+    // trans is the returned data from the GET. It is the
+    // 'echo implode(',', $ar) in SlideShow.class.
+    
     $.ajax({
       url: request,
       success: function(trans) { me.succInit(trans); },
@@ -301,9 +299,7 @@ SlideShow.prototype.getPath =  function() {
 // After the page is loaded init() is called via the 'onload' event.
 // I see no reason why this couldn't be called directly if you find
 // some reason to do so as all init() does is set up event observers
-// and change the string names of id's into elements. The $() function
-// of prototype.js knows not to do that twice. The disp.update() will
-// just create a blank img in 'disp'.
+// and change the string names of id's into elements. 
 
 SlideShow.prototype.init = function() {
   var me = this;  // trick for closure in event observers
@@ -525,7 +521,6 @@ SlideShow.prototype._image = function(img) {
     // cache the image and set the onload event. 
 
     this.src = img;
-    var me = this;
     this.errTimeout = setTimeout(function() { me.errImage(); }, 10000);
     this.image.onload = function() { me.dispImage(); };
     this.image.src = img;
@@ -537,17 +532,20 @@ SlideShow.prototype._image = function(img) {
     // SlideShow.class.php as the img src and do the cache as
     // above.
 
-    console.log("navigator", navigator);
-    
-    if(true) {
+    console.log("navigator.product", navigator.product);
+
+    if(navigator.product == 'Gecko') {
       // The Ajax request returns an image in the form
       // "data:image/gif;base64," plus base64 encode image
       // data. This works with Gecko but I am told not
       // with IE (I don't use Windows so I don't really
       // know. I did this primairly to try out Ajax and
-      // wanted to see if I could use in instead of the
+      // wanted to see if I could use it instead of the
       // other option.
 
+      console.log("This is Gecko");
+      console.log("img: ", img);
+      
       this.ajaxRequest = $.ajax({
         url: this.ajaxPath + 'SlideShow.class.php?mode=get&path=' + img,
         success: function(trans) { me.succImg(trans); },
@@ -666,7 +664,7 @@ SlideShow.prototype.succInit = function(trans) {
     this.fail(trans);
   } else {
     this.imageNames = trans.split(",");
-    //console.log("succInit imageNames: ", this.imageNames);
+    console.log("succInit imageNames: ", this.imageNames);
   }
 }
 

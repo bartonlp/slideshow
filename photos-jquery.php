@@ -2,7 +2,7 @@
 //require_once("vendor/autoload.php");
 require_once('SlideShow.class.php');
 
-$ss = new SlideShow('loc', './images', true); // args: mode, path, echo. mode can be 'loc', 'url', 'get' or 'proxy'
+$ss = new SlideShow('loc', './images', false); // args: mode, path, echo. mode can be 'loc', 'url', 'get' or 'proxy'
 $names = $ss->getImageNames();
 
 echo <<<EOF

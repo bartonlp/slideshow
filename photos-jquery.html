@@ -33,7 +33,6 @@ SOFTWARE.
   src="https://code.jquery.com/jquery-3.6.1.min.js"
   integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
   crossorigin="anonymous"></script>
-  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
   <!--
   If you run these examples from the 'vendor/bartonlp/slideshow' directory then
   relative paths should work OK.
@@ -71,7 +70,7 @@ SOFTWARE.
 The SlideShow.php script sets another load for the init() method via the
 DOM event module. Both events are fired on load. -->
 
-<body onload=""setObserveIndex()">
+<body onload="setObserveIndex()">
 
 <!-- Place holder for a header -->
 
@@ -86,13 +85,11 @@ DOM event module. Both events are fired on load. -->
 <p id="info"></p>
 </div>
 
-<!-- This is for the index and file name. See setObserverIndex() and
-newImage() -->
+<!-- This is for the index and file name. See setObserverIndex() and newImage() -->
 
 <div><p id='index' style='border: 1px solid red; width: auto;'></p></div>
 
-<!-- This is for the slide show. The img tag is placed inside of this
-div -->
+<!-- This is for the slide show. The img tag is placed inside of this div -->
 
 <div id="slideshow" style="border: 4px solid black"></div>
 
@@ -151,6 +148,7 @@ happend here -->
     disp: '#slideshow', // jquery selector
     errDisp: '#errors', // jquery selector
     width: '400', // px
+    height: '224',
     mode: 'loc', // 'loc' for the local filesystem or 'url' for a remote website
     enlarge: '1000', // Milliseconds
     path: './images', // or a fully qualified filesystem path or a website URL.

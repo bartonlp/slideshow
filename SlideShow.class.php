@@ -49,7 +49,7 @@ class SSException extends Exception {
 // Every time this file is called via Ajax we instantiate the class anew.
 
 if(isset($_GET['mode']) && isset($_GET['path'])) {
-  //error_log("GET: mode={$_GET['mode']}, path={$_GET['path']}");
+  error_log("SlideShow.class: GET, mode={$_GET['mode']}, path={$_GET['path']}");
   
   new SlideShow($_GET['mode'], $_GET['path']);
 }
@@ -132,9 +132,6 @@ class SlideShow {
    */
   
   public function __construct($mode, $path, $echo=true) {
-    //error_log("GET: mode={$_GET['mode']}, path={$_GET['path']}, echo={$_GET['echo']}");
-    //error_log("construct: mode=$mode, path=$path, echo=$echo");
-    
     $this->mode = $mode;
     $this->path = $path;
     $this->echo = $echo;
@@ -152,7 +149,8 @@ class SlideShow {
   public function getImageNames(bool $echo=null):string {
     $echo = $echo ? $echo : $this->echo;
     $path = $this->path;
-
+    //error_log("SlideShow.class: getImageNames, path=$path");
+    
     $ret = null;
 
     try {
@@ -215,7 +213,8 @@ class SlideShow {
       throw new SSException("no files found");
     }
     // $ar is an array of filenames so make it a comma seperated list
-
+    // $echo is set by JavaScript
+    
     if($echo) {
       // This echo is used by SlideShow-jquery.js when it does the ajax call in setPath(path, mode)
       echo implode(',', $ar);
@@ -269,7 +268,7 @@ class SlideShow {
     $data = '';
     foreach($ar as $line) {
       if(preg_match('/^.*href="(.*\.((gif)|(jpg)|(png)))">.*$/i', $line, $m)) {
-        $data .= $path . $m[1] . ',';
+        $data .= "$path$m[1],";
       }
     }
     $data = rtrim($data, ',');  // strip off the trailing comma
@@ -295,7 +294,7 @@ class SlideShow {
     // image that looks like <img src='SlideShow.class.php?path=filename', .../>
 
     // get the extension of the file
-
+    error_log("SlideShow.class: getImage, path=$path");
     $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
     if(!preg_match('/(gif)|(jpg)|(png)/', $ext)) {

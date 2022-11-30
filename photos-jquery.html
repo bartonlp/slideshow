@@ -41,7 +41,8 @@ SOFTWARE.
   to:
   <script src="vendor/bartonlp/slideshow/SlideShow-jquery.js"></script>
   -->
-  <script src="SlideShow-jquery.js"></script>
+  <!--<script src="SlideShow-jquery.js"></script>-->
+  <script src="SlideShow.class.js"></script>
 
   <style>
 #footer {
@@ -139,6 +140,9 @@ happend here -->
 
 <div id="footer">That's All Folks</div>
 
+<!-- The javaScript is the last thing in the page. Therefore when the javaScript class SlideShow is
+instantiated everything has already been loaded. -->
+
 <script>
   // Initialize the SlideShow object. See SlideShow.jquery.js for
   // information on initialization process.
@@ -148,7 +152,7 @@ happend here -->
     disp: '#slideshow', // jquery selector
     errDisp: '#errors', // jquery selector
     width: '400', // px
-    height: '224',
+    //height: '',
     mode: 'loc', // 'loc' for the local filesystem or 'url' for a remote website
     enlarge: '1000', // Milliseconds
     path: './images', // or a fully qualified filesystem path or a website URL.
@@ -160,6 +164,10 @@ happend here -->
                 forward: '#next'
               }
   });
+
+  function start() {
+    ss.startSlideshow();
+  }
 
   $("#path-submit").click(function() {
     return setNewPath();
@@ -193,7 +201,7 @@ happend here -->
 
   function setInterval() {
     var i = $('#interval');
-    ss.setInterval(i.val());
+    ss.Interval = i.val();
     return false;
   }
 
@@ -211,7 +219,7 @@ happend here -->
 
     ss.setPath(path.val(), mode.val());
     path.val(ss.getPath()['path']);
-    ss.setIndex(0); // set the index incase we have been running and index is not zero
+    ss.Index = 0; // set the index incase we have been running and index is not zero
   }
 
   function setObserveIndex() {

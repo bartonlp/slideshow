@@ -37,13 +37,13 @@ SOFTWARE.
 // When the id's are present the constructor will add observers for
 // onclick.
 // mode: weather this is a local directory or remote. If remote then
-//  path is a absolute URL (http://...). mode defaults to 'loc',
+//  path is a absolute URL (https://...). mode defaults to 'loc',
 //  the other value is 'url'.
 //  If mode is 'url' then the img src is set to the value of path plus
 //  the imageNames[0..n] array established by the constructor which has the
 //  names of each image file (gif, jpg, png)
 //  If mode is 'loc' then the files are on the local file system but not
-//  necessarily withing the Document Root of the web server. In that
+//  necessarily within the Document Root of the web server. In that
 //  case the img src is a php proxy file that provides the image. The
 //  proxy is done by 'SlideShow.class.php'.
 //
@@ -77,9 +77,9 @@ SOFTWARE.
 // fail().
 // The PHP functions are done by the SlideShow.class.php file which has the PHP
 // class SlideShow.
-// The demonstration file photos.html is also provided.
+// The demonstration file photos-jquery.html is also provided.
 //
-// NOTE: Trick! To use events from withing this (or any Class) you must
+// NOTE: Trick! To use events from within this (or any Class) you must
 // use a closure. For example:
 // The class xx.
 // xx.prototype.y = function() {
@@ -91,8 +91,8 @@ SOFTWARE.
 //
 // This code was created by:
 // Barton Phillips.
-// Home Page: www.bartonphillips.com,
-// Home:      www.bartonphillips.dyndns.org,
+// Home Page: https://www.bartonphillips.com,
+// Home:      https://www.bartonphillips.org,
 // Email:     bartonphillips@gmail.com
 // ---------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ SlideShow = function(ctrl) {
 
 // Getter/Setter functions.
 // Most every property has a getXxxx() and setXxxx() function. I
-// discrive only the setXxxx()
+// discribe only the setXxxx()
 
 // Set the setTimeout() delay interval in milliseconds
 

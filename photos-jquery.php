@@ -1,9 +1,15 @@
 <?php
+// This Demo uses jQuery.
+  
 //require_once("vendor/autoload.php");
 require_once('SlideShow.class.php');
 
-$ss = new SlideShow('loc', './images', false); // args: mode, path, echo. mode can be 'loc', 'url', 'get' or 'proxy'
+$mode = "url";
+//$ss = new SlideShow($mode, './images', false);
+$ss = new SlideShow($mode, 'https://bartonlp.org/photos', false);
+
 $names = $ss->getImageNames();
+//error_log("names: " . $names);
 
 echo <<<EOF
 <!DOCTYPE html>
@@ -13,15 +19,38 @@ echo <<<EOF
   <!-- jQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script>
-// Initialize the SlideShow object. See SlideShow.js for
-// information on initialization process.
-
 jQuery(document).ready(function($) {
-  var names = [$names];
+  let names = "$names".split(','); // Make the PHP values $names into an array.
+  let mode = "$mode";
+  let width = 400;
 
+  let images = [];
+  
   function next(i) {
-    console.log(i);
-    $("#slideshow").html("<img src='SlideShow.class.php?mode=proxy&path="+names[i]+"'>");
+    console.log(i, names[i]);
+
+    let ss = $("#slideshow");
+    ss.html("<img>").hide();
+    
+    let img = $("img", ss);
+
+    if(mode == 'loc') {
+      img.attr("src", "SlideShow.class.php?mode=proxy&path="+names[i]);
+    } else {
+      img.attr("src", names[i]);
+    }
+
+    img.on('load', function() {
+      let h = this.height, // Get the real width
+      w = this.width,      // and height
+      sized = h / w * width; // width is the actual size we want, and h is the actual height based
+                             // on the formula
+
+      $(this).width(width);
+      ss.css({border: '4px solid black', width: '400px', height: sized +'px'}).show();
+      //ss.show();
+    });
+      
     if(++i >= names.length) {
       i = 0;
     }
@@ -62,10 +91,6 @@ jQuery(document).ready(function($) {
 }
   </style> 
 </head>
-
-<!-- The on load here activates the setObserverIndex() in the head.
-The SlideShow.php script sets another load for the init() method via the
-DOM event module. Both events are fired on load. -->
 
 <body>
 <div id="slideshow" style="border: 4px solid black"></div>

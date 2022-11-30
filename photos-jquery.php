@@ -1,12 +1,18 @@
 <?php
-// This Demo uses jQuery.
+// This Demo uses jQuery and the PHP SlideShow class.
   
-//require_once("vendor/autoload.php");
 require_once('SlideShow.class.php');
 
+// Select the mode: loc or url
+// $mode = "loc";
 $mode = "url";
-//$ss = new SlideShow($mode, './images', false);
-$ss = new SlideShow($mode, 'https://bartonlp.org/photos', false);
+// Select where your images come from.
+// If 'loc' then use a relative or absolute path to somewhere on this computer.
+//$url = "./images"; // Points to the directory here.
+// If 'url' then use an full URL to a server where the images are.
+$url = "https://bartonlp.org/photos"; // Change this if you want. The images are on this server.
+
+$ss = new SlideShow($mode, $url, false);
 
 $names = $ss->getImageNames();
 //error_log("names: " . $names);

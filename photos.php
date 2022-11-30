@@ -1,15 +1,15 @@
 <?php
-// This Demo uses pure JavaScript.
+// This Demo uses pure JavaScript and my PHP SlideShow class.
   
-//require_once("vendor/autoload.php");
 require_once('SlideShow.class.php');
 
-//$ss = new SlideShow('loc', './images', false); // args: mode, path, echo. mode can be 'loc',
-//'url', 'get' or 'proxy'
-$mode = 'url';
-$ss = new SlideShow($mode, 'https://bartonlp.org/photos', false); // args: mode, path, echo. mode can be 'loc', 'url', 'get' or 'proxy'
-$names = $ss->getImageNames();
-error_log("names: " . $names);
+// You can change $mode to 'loc' and $url to './images' or any local path.
+$mode = 'url'; // mode can be 'loc' or 'url'
+$url = "https://bartonlp.org/photos"; // If $mode is 'url'. If $mode is 'loc' then you can use './images'
+
+$ss = new SlideShow($mode, $url, false); // Instantiate the class
+
+$names = $ss->getImageNames(); // Get the image info.
 
 echo <<<EOF
 <!DOCTYPE html>
@@ -18,12 +18,6 @@ echo <<<EOF
   <title>Photo Slide Show Demo</title>
 
   <style>
-/*#slideshow {
-        position: relative;
-}*/
-/*#slideshow img {
-        max-height: 700px;
-}*/
 #footer {
         border: 1px solid back;
         background-color: green;
@@ -50,7 +44,7 @@ echo <<<EOF
 <div id="slideshow" style="border: 4px solid black"></div>
 
 <script>
-  var names = [$names];
+  var names = "$names".split(',');
   let mode = '$mode';
   
   function next(i) {
@@ -73,6 +67,7 @@ echo <<<EOF
         let natw = img.naturalWidth;
         
         console.log("natw: " + natw + ", nath: " + nath);
+
         img.style.width = '400px';
         img.style.display = 'block';
         ss.style.width = '400px';
@@ -97,6 +92,3 @@ echo <<<EOF
 </body>
 </html>
 EOF;
-
-// h/w = nh/nw
-// h = nh/nw * w

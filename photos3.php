@@ -1,26 +1,26 @@
 <?php
+// Demo using pure JavaScript and my PHP SlideShow class.
+
 require_once('SlideShow.class.php');
 
-if(json_decode(file_get_contents("php://input"))) {
-  $ss = new SlideShow('url', 'https://bartonlp.org/photos', false);
+// This is a post via 'fetch()'. The input is to 'php://input' not '$_POST'.
 
-  $names = explode(",", $ss->getImageNames());
+if(json_decode(file_get_contents("php://input"))) {
+  $ss = new SlideShow('url', 'https://bartonlp.org/photos', false); // Images are on my server.
+
+  $names = explode(",", $ss->getImageNames()); // Get a string of images seperated by commas and turn it into an array.
   
   $images = [];
   
   foreach($names as $name) {
-    error_log("name: $name");
     $img = file_get_contents($name);
     if(empty($img)) error_log("NO IMAGE");
     
     $d = base64_encode($img);
-    error_log("d: $d");
     
     $image = "<img src='data:image/jpeg;base64,$d'>";
-    error_log("image: $image");
     $images[] = $image;
   }
-  error_log("images: " . print_r($images, true));
   echo json_encode($images);
   exit();
 }
@@ -42,7 +42,7 @@ echo <<<EOF
     show.innerHTML = "<img src='https://bartonphillips.net/images/loading.gif'>";
     let test = { page: "start" };
 
-    fetch("./test3.php", {
+    fetch("./photos3.php", {
       body: JSON.stringify(test),
       method: "POST",
       headers: {
@@ -79,4 +79,3 @@ echo <<<EOF
 </body>
 </html>      
 EOF;
-

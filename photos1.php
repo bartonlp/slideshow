@@ -1,12 +1,15 @@
 <?php
-//require_once(getenv("SITELOADNAME"));
+// Demo using jQuery and an array of images. The images are located on my server.
+// This demo does not use the PHP SlideShow class at all.
 
 if($_POST) {
+  // Load the $names array. These Jpegs exist on my server in the 'photos' directory.
+  
   $names = ['CIMG0006.JPG','CIMG0007.JPG','CIMG0008.JPG','CIMG0009.JPG','CIMG0010.JPG'];
   $images = [];
   
   foreach($names as $name) {
-    $img = file_get_contents("https://bartonlp.org/photos/$name");
+    $img = file_get_contents("https://bartonlp.org/photos/$name"); // Get the image from my server
     $d = base64_encode($img);
     $image = "<img src='data:image/jpeg;base64,$d'>";
     $images[] = $image;
@@ -27,9 +30,11 @@ echo <<<EOF
   
   $("button").on("click", function() {
     $(this).hide();
-    $("#show").html("<img src='https://bartonphillips.net/images/loading.gif'>");
+    // The 'loading.gif' is on one of my servers.
+    $("#show").html("<img src='https://bartonphillips.net/images/loading.gif'>"); 
+    
     $.ajax({
-      url: "test.php",
+      url: "photos1.php",
       type: 'post',
       data: {page: "start" },
       success: function(trans) {
@@ -64,4 +69,3 @@ echo <<<EOF
 </body>
 </html>      
 EOF;
-

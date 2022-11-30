@@ -1,22 +1,18 @@
 <?php
-require_once('SlideShow.class.php');
+// Demo using jQuery and my PHP SlideShow class.
+
+require_once('SlideShow.class.php'); // This may need to be changed depending on your environment.
 
 if($_POST['page'] == "start") {
-  $ss = new SlideShow('url', 'https://bartonlp.org/photos', false);
+  $ss = new SlideShow('url', 'https://bartonlp.org/photos', false); // Use 'url' and the location on my server where the photos are.
 
-  $names = $ss->getImageNames();
-  error_log("names: " . print_r($names, true));
-  $names = explode(',', $names);
+  $names = $ss->getImageNames(); // This is a plain string list seperated by commas.
+
+  $names = explode(',', $names); // Make into an array
   
   $images = [];
   
   foreach($names as $name) {
-    error_log("name: $name");
-//    $img = file_get_contents($name);
-//    if(empty($img)) error_log("NO IMAGE");
-//    $d = base64_encode($img);
-//    $image = "<img src='data:image/jpeg;base64,$d'>";
-//    $images[] = $image;
     $images[] = "<img src=$name>";
   }
   echo json_encode($images);
@@ -37,7 +33,7 @@ echo <<<EOF
     $(this).hide();
     $("#show").html("<img src='https://bartonphillips.net/images/loading.gif'>");
     $.ajax({
-      url: "test2.php",
+      url: "photos2.php",
       type: 'post',
       data: {page: "start" },
       success: function(trans) {
@@ -72,4 +68,3 @@ echo <<<EOF
 </body>
 </html>      
 EOF;
-
